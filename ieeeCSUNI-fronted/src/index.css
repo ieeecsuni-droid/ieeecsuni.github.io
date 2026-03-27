@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Google Fonts (Outfit + JetBrains Mono) ── */
+
+/* ── Design tokens ── */
+:root {
+  --b:     #0a0f1c;
+  --b2:    #0e1627;
+  --b3:    #131d35;
+  --c1:    #00d4ff;
+  --c2:    #0099dd;
+  --c3:    #006699;
+  --gold:  #f5a800;
+  --fg:    #e8f4ff;
+  --fg2:   #8db4cc;
+  --fg3:   #3d6080;
+  --border:  rgba(0, 170, 255, 0.12);
+  --border2: rgba(0, 170, 255, 0.25);
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--b);
+  color: var(--fg);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 150, 200, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 150, 200, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: var(--b2); }
+::-webkit-scrollbar-thumb { background: var(--c3); border-radius: 3px; }
+
+/* ── Reusable utility classes (complement Tailwind) ── */
+@layer components {
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-sm font-bold tracking-widest uppercase text-white border-none cursor-pointer transition-all duration-200 no-underline;
+    background: linear-gradient(135deg, var(--c3), var(--c2));
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--c2), var(--c1));
+    @apply -translate-y-0.5;
+    box-shadow: 0 8px 28px rgba(0, 170, 255, 0.25);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-sm font-bold tracking-widest uppercase cursor-pointer transition-all duration-200 no-underline;
+    border: 1.5px solid var(--border2);
+    color: var(--c1);
+    background: transparent;
+  }
+  .btn-outline:hover {
+    border-color: var(--c1);
+    background: rgba(0, 212, 255, 0.06);
+    @apply -translate-y-0.5;
+  }
+
+  /* Section label */
+  .sec-label {
+    @apply flex items-center gap-3 mb-4;
+  }
+  .sec-label::before {
+    content: '';
+    @apply block w-6 h-0.5;
+    background: var(--c1);
+  }
+  .sec-label span {
+    @apply font-mono text-xs tracking-widest uppercase;
+    color: var(--c1);
+  }
+
+  .sec-title {
+    @apply text-4xl md:text-5xl font-extrabold tracking-tight leading-tight;
+  }
+
+  /* Cards */
+  .card-base {
+    @apply rounded-xl border transition-all duration-200;
+    background: var(--b2);
+    border-color: var(--border);
+  }
+  .card-base:hover {
+    border-color: var(--border2);
+    @apply -translate-y-1;
+  }
+
+  /* Form fields */
+  .field-label {
+    @apply font-mono text-xs tracking-widest uppercase mb-1;
+    color: var(--fg2);
+  }
+  .field-input {
+    @apply w-full rounded-lg px-4 py-3 text-sm outline-none transition-all duration-200;
+    background: rgba(0, 80, 130, 0.1);
+    border: 1px solid var(--border2);
+    color: var(--fg);
+    font-family: 'Outfit', sans-serif;
+  }
+  .field-input::placeholder { color: var(--fg3); }
+  .field-input:focus {
+    border-color: var(--c1);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+  }
+  .field-input option { background: var(--b3); }
+
+  /* Chip / tag */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono;
+    background: rgba(0, 150, 220, 0.1);
+    border: 1px solid var(--border);
+    color: var(--fg2);
+  }
+
+  /* Page hero wrapper */
+  .page-hero {
+    @apply relative flex flex-col justify-center px-12 md:px-20 overflow-hidden;
+    padding-top: 80px;
+    padding-bottom: 60px;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* Orb glows */
+  .orb {
+    @apply absolute rounded-full pointer-events-none;
+    filter: blur(80px);
+  }
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
