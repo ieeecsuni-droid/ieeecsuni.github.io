@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "IEEE Computer Society — UNI Student Chapter website",
   "private": true,
-  "homepage": "https://ieeecsuni-droid/",
+  "homepage": "https://ieeecsuni-droid.github.io/ieeeCSUNI-fronted",
 
   "scripts": {
     "dev": "vite",
