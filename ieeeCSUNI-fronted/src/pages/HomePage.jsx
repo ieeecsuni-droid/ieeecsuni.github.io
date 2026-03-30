@@ -164,7 +164,7 @@ export default function HomePage() {
             animation: 'breathe 3.5s ease-in-out infinite',
           }}
         />
-        <img src="./public/codenixLogo.png"
+        <img src="./codenixLogo.png"
           alt="CODENIX logo featuring a stylized phoenix with blue and orange wings against a dark background, representing innovation and competition in programming"
           style={{
             width: 160,
