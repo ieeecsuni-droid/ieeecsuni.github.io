@@ -51,7 +51,6 @@ export default function MemberTasks({ user = { name: 'Adrián César' }, onNavig
   }
 
   return (
-    <DashboardLayout role="member" user={user} activePath="/member/tasks" onNavigate={onNavigate} onLogout={onLogout}>
       <div className="max-w-5xl mx-auto animate-fade-up">
         <PageHeader
           title="Mis tareas"
@@ -146,6 +145,5 @@ export default function MemberTasks({ user = { name: 'Adrián César' }, onNavig
           // Vista Kanban disponible en v2
         </p>
       </div>
-    </DashboardLayout>
   )
 }
