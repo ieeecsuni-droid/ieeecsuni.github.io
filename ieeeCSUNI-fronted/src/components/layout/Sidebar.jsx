@@ -8,7 +8,7 @@
 // ============================================================
 
 import { useState } from 'react'
-
+import { IEEECSLogo } from '../../assets/IEEECSLogo'
 // Íconos SVG inline (sin dependencia de librería)
 // Reemplaza por lucide-react si lo tienes: import { LayoutDashboard } from 'lucide-react'
 const icons = {
@@ -127,12 +127,8 @@ export default function Sidebar({ role = 'member', activePath = '/', user = {}, 
         {!collapsed && (
           <div className="flex items-center gap-2">
             {/* Badge IEEE CS — mismo estilo que tu landing */}
-            <span
-              className="font-mono text-xs font-bold px-2 py-1 rounded"
-              style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.3)' }}
-            >
-              IEEE CS
-            </span>
+            <IEEECSLogo size={36} />
+            IEEE C
             <span className="text-xs font-light tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>UNI</span>
           </div>
         )}

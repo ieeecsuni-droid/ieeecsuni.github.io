@@ -1,3 +1,23 @@
+// src/Layout.jsx
+// ============================================================
+// Punto de entrada de la app.
+// Demo mode: cambia el rol con los botones del header para
+// previsualizar cada zona.
+//
+// EN PRODUCCIÓN:
+//   - Elimina los botones de cambio de rol
+//   - Conecta `currentUser` con tu sistema de auth (Sanctum)
+//   - Usa react-router-dom para el enrutamiento real
+//   - El rol viene del JWT / sesión del backend Laravel
+//
+// RUTAS SUGERIDAS (react-router-dom):
+//   /member/*  → DashboardLayout role="member"
+//   /admin/*   → DashboardLayout role="admin" (guard: require admin)
+//   /user/*    → DashboardLayout role="user"
+//   /login     → LoginPage
+// ============================================================
+
+
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Navbar } from './components/layout/Navbar'
 import { Footer } from './components/layout/Footer'
@@ -21,14 +41,17 @@ import NotFoundPage from './pages/NotFoundPage'
 function Layout() {
   const { pathname } = useLocation()
   const NO_FOOTER_ROUTES = ['/login', '/member', '/admin', '/user']
+  const NO_NAVBAR_ROUTES = ['/login', '/member', '/admin', '/user']
   // Verificamos si la ruta actual coincide con las rutas sin footer
   // Usamos startsWith por si hay subrutas en el dashboard
   const isDashboard = !NO_FOOTER_ROUTES.some(r => pathname.startsWith(r))
   const showFooter = !isDashboard
-  
+
+  const isAnotherDashboard = !NO_NAVBAR_ROUTES.some(r => pathname.startsWith(r))
+  const showNavbar = !isAnotherDashboard  
   return (
     <>
-      <Navbar />
+      { showNavbar && <Navbar /> }
       <main className="min-h-screen">
         <Routes>
           {/* HEROPAGE */}
