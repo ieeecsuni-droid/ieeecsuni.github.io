@@ -37,18 +37,18 @@ import MemberCerts from './pages/member/MemberCerts'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import UserDashboard from './pages/user/UserDashboard'
 import NotFoundPage from './pages/NotFoundPage'
+import DashboardLayout from './components/layout/DashboardLayout'
 
 function Layout() {
   const { pathname } = useLocation()
-  const NO_FOOTER_ROUTES = ['/login', '/member', '/admin', '/user']
-  const NO_NAVBAR_ROUTES = ['/login', '/member', '/admin', '/user']
+  const NO_UI = ['/login', '/member', '/admin', '/User', '/user']
   // Verificamos si la ruta actual coincide con las rutas sin footer
   // Usamos startsWith por si hay subrutas en el dashboard
-  const isDashboard = !NO_FOOTER_ROUTES.some(r => pathname.startsWith(r))
-  const showFooter = !isDashboard
+  const hideUI = NO_UI.some(r => pathname.startsWith(r))
 
-  const isAnotherDashboard = !NO_NAVBAR_ROUTES.some(r => pathname.startsWith(r))
-  const showNavbar = !isAnotherDashboard  
+  const showFooter = !hideUI
+  const showNavbar = !hideUI
+
   return (
     <>
       { showNavbar && <Navbar /> }
@@ -63,14 +63,25 @@ function Layout() {
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/login" element={<LoginPage />} />
           {/* MEMBER */}
-          <Route path="/member" element={<MemberDashboard/>} />
-          <Route path="/member/hours" element={<MemberHours/>} />
-          <Route path="/member/tasks" element={<MemberTasks/>} />
-          <Route path="/member/certs" element={<MemberCerts/>} />
+          <Route path="/member" element={<DashboardLayout role="member" />}>
+            {/* Esta es la página principal del dashboard (/member) */}
+            <Route index element={<MemberDashboard />} /> 
+            
+            {/* Estas son las subrutas (/member/hours, etc.) */}
+            <Route path="hours" element={<MemberHours />} />
+            <Route path="tasks" element={<MemberTasks />} />
+            <Route path="certs" element={<MemberCerts />} />
+          </Route>
+
           {/* ADMIN */}
-          <Route path="/admin" element={<AdminDashboard/>} />
+          <Route path="/admin" element={<DashboardLayout role="admin" />}>
+            <Route index element={<AdminDashboard />} />
+          </Route>
+
           {/* USER */}
-          <Route path="/user" element={<UserDashboard/>} />
+          <Route path="/user" element={<DashboardLayout role="user" />}>
+            <Route index element={<UserDashboard />} />
+          </Route>
           {/* NOTFOUNDPAGE 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
