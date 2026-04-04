@@ -8,10 +8,7 @@
 //   GET /api/member/certificates/:id/pdf  → descarga del PDF
 //   En v2: los PDFs vienen de Cloudinary (URL pública)
 //   En v1: el backend genera el PDF y lo sirve como blob
-// ============================================================
-
-import { useState } from 'react'
-import DashboardLayout from '../../components/layout/DashboardLayout'
+// ============================================================+}
 import { GlassCard, PageHeader, PrimaryButton, EmptyState } from '../../components/layout/UI'
 
 const TIPO_COLORS = {
