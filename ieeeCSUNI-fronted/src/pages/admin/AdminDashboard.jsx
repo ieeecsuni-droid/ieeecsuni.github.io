@@ -12,7 +12,6 @@
 // ============================================================
 
 import { useState } from 'react'
-import DashboardLayout from '../../components/layout/DashboardLayout'
 import { GlassCard, StatCard, Badge, PageHeader, PrimaryButton, GhostButton } from '../../components/layout/UI'
 
 const mockStats = {
@@ -117,7 +116,7 @@ export default function AdminDashboard({ user = { name: 'Admin' }, onNavigate, o
   }
 
   return (
-    <DashboardLayout role="admin" user={user} activePath={activePath} onNavigate={onNavigate} onLogout={onLogout}>
+    
       <div className="max-w-6xl mx-auto animate-fade-up">
 
         <PageHeader
@@ -215,6 +214,5 @@ export default function AdminDashboard({ user = { name: 'Admin' }, onNavigate, o
           </GlassCard>
         </div>
       </div>
-    </DashboardLayout>
   )
 }
