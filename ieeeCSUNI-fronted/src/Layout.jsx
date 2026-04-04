@@ -34,14 +34,24 @@ import MemberDashboard from './pages/member/MemberDashboard'
 import MemberHours from './pages/member/MemberHours'
 import MemberTasks from './pages/member/MemberTasks'
 import MemberCerts from './pages/member/MemberCerts'
+import MemberEvents from './pages/member/MemberEvents'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminCerts from './pages/admin/AdminCerts'
+import AdminEvents from './pages/admin/AdminEvents'
+import AdminStats from './pages/admin/AdminStats'
+import AdminTasks from './pages/admin/AdminTasks'
+import AdminVolunteer from './pages/admin/AdminVolunteer'
+
 import UserDashboard from './pages/user/UserDashboard'
+import UserCerts from './pages/user/UserCerts'
+import UserEvents from './pages/user/UserEvents'
 import NotFoundPage from './pages/NotFoundPage'
 import DashboardLayout from './components/layout/DashboardLayout'
+import AdminUsers from './pages/admin/AdminUsers'
 
 function Layout() {
   const { pathname } = useLocation()
-  const NO_UI = ['/login', '/member', '/admin', '/User', '/user']
+  const NO_UI = ['/login', '/member', '/admin', '/User', '/user', '/Admin', '/Member']
   // Verificamos si la ruta actual coincide con las rutas sin footer
   // Usamos startsWith por si hay subrutas en el dashboard
   const hideUI = NO_UI.some(r => pathname.startsWith(r))
@@ -71,16 +81,25 @@ function Layout() {
             <Route path="hours" element={<MemberHours />} />
             <Route path="tasks" element={<MemberTasks />} />
             <Route path="certs" element={<MemberCerts />} />
+            <Route path="events" element={<MemberEvents />} />
           </Route>
 
           {/* ADMIN */}
           <Route path="/admin" element={<DashboardLayout role="admin" />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="certs" element={<AdminCerts />} />
+            <Route path="events" element={<AdminEvents />} />
+            <Route path="stats" element={<AdminStats />} />
+            <Route path="tasks" element={<AdminTasks />} />
+            <Route path="hours" element={<AdminVolunteer />} />
+            <Route path='users' element={<AdminUsers />} />
           </Route>
 
           {/* USER */}
           <Route path="/user" element={<DashboardLayout role="user" />}>
             <Route index element={<UserDashboard />} />
+            <Route path="certs" element={<UserCerts />} />
+            <Route path="events" element={<UserEvents />} />
           </Route>
           {/* NOTFOUNDPAGE 404 */}
           <Route path="*" element={<NotFoundPage />} />
