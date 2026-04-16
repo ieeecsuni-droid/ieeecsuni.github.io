@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
-const API = "http://127.0.0.1:8000"
-
+const API = "http://localhost:8000"
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -10,7 +9,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const res = await fetch(`$[API]/api/user`, {
+        const res = await fetch(`${API}/api/user`, {
           credentials: "include",
         })
         if (res.ok) {
@@ -27,6 +26,13 @@ export function AuthProvider({ children }) {
       credentials: "include"
     })
   }
+  //Manejar cookie X-CSRF
+  const getCookie = (name) => {
+    return document.cookie
+      .split("; ")
+      .find(row => row.startsWith(name + "="))
+      ?.split("=")[1]
+  }
 
   // login llamando a la promise de CSRF
   const login = async({ email, password }) => {
@@ -34,7 +40,11 @@ export function AuthProvider({ children }) {
 
     const res = await fetch(`${API}/login`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-XSRF-TOKEN": decodeURIComponent(getCookie("XSRF-TOKEN")),
+      },
       credentials: "include",
       body: JSON.stringify({ email, password }),
     })
@@ -61,7 +71,11 @@ export function AuthProvider({ children }) {
 
     const res = await fetch(`${API}/register`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-XSRF-TOKEN": decodeURIComponent(getCookie("XSRF-TOKEN")),
+      },
       credentials: "include",
       body: JSON.stringify({
         name: nombre,
