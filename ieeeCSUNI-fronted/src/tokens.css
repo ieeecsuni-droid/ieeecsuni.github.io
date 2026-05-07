@@ -40,4 +40,17 @@
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 280ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-premium: 450ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ── Navbar Surfaces ── */
+  --color-nav-surface: #060a14;
+  --color-nav-surface-scrolled: rgba(6, 10, 20, 0.97);
+  --color-nav-border: rgba(255, 255, 255, 0.04);
+  --color-nav-border-scrolled: rgba(14, 165, 233, 0.08);
+  --color-nav-active-line: rgba(14, 165, 233, 0.7);
+  --color-nav-active-glow: rgba(14, 165, 233, 0.12);
+
+  /* ── Footer Surfaces ── */
+  --color-footer-surface: #030712;
+  --color-footer-border: rgba(255, 255, 255, 0.03);
 }

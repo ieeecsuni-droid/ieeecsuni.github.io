@@ -20,32 +20,97 @@ const socials = [
 ]
 
 export function Footer() {
+  const year = new Date().getFullYear()
+
   return (
-    <footer className="relative z-10 pt-16 pb-8 px-6 md:px-20 border-t border-white/[0.06] bg-[#020617]">
-      <div className="max-w-7xl mx-auto">
+    <footer
+      id="main-footer"
+      className="relative z-10 overflow-hidden"
+      style={{ background: 'var(--color-footer-surface)' }}
+    >
+      {/* ─── Top gradient separator ─── */}
+      <div className="footer-gradient-line" />
 
-        {/* Grid principal */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 mb-12">
+      {/* ─── Architectural grid overlay ─── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px',
+          maskImage: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.5) 70%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.5) 70%, transparent)',
+        }}
+      />
 
-          {/* Columna de marca */}
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <IEEECSLogo size={36} />
-              <div>
-                <div className="text-sm font-bold text-white">IEEE CS</div>
-                <div className="font-mono text-[10px] tracking-widest uppercase text-gray-600">
-                  UNI Chapter
-                </div>
+      {/* ─── Ambient directional lighting ─── */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+        style={{
+          width: '800px',
+          height: '300px',
+          background: 'radial-gradient(ellipse at center top, rgba(14, 165, 233, 0.04), transparent 70%)',
+        }}
+      />
+
+      {/* ─── Main Content ─── */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
+
+        {/* ─── Manifesto Block ─── */}
+        <div className="pt-20 pb-16 md:pt-24 md:pb-20">
+          <div className="max-w-2xl">
+            <h2
+              className="text-[28px] md:text-[36px] font-semibold leading-[1.15] tracking-[-0.02em] mb-6"
+              style={{
+                color: 'var(--color-text-primary)',
+                fontFamily: 'var(--font-heading)',
+              }}
+            >
+              Construyendo el futuro
+              <br />
+              <span style={{ color: 'var(--color-text-secondary)' }}>
+                desde la ingeniería.
+              </span>
+            </h2>
+            <p
+              className="text-[15px] leading-relaxed max-w-md"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              Investigación, sistemas y ciberseguridad. Somos el capítulo estudiantil
+              de la IEEE Computer Society en la Universidad Nacional de Ingeniería.
+            </p>
+          </div>
+        </div>
+
+        {/* ─── Grid: Identity + Navigation Clusters ─── */}
+        <div
+          className="py-12 grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8"
+          style={{ borderTop: '1px solid var(--color-footer-border)' }}
+        >
+          {/* Identity column */}
+          <div className="col-span-2">
+            <div className="flex items-center gap-3 mb-5">
+              <IEEECSLogo size={28} />
+              <div className="flex flex-col">
+                <span
+                  className="text-[13px] font-semibold tracking-[0.01em]"
+                  style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-heading)' }}
+                >
+                  IEEE Computer Society
+                </span>
+                <span
+                  className="font-mono text-[9px] tracking-[0.2em] uppercase mt-0.5"
+                  style={{ color: 'var(--color-text-muted)' }}
+                >
+                  UNI Student Chapter · Lima, Perú
+                </span>
               </div>
             </div>
 
-            <p className="text-sm leading-relaxed text-gray-500 max-w-xs">
-              Capítulo estudiantil de la IEEE Computer Society en la Universidad
-              Nacional de Ingeniería, Lima, Perú.
-            </p>
-
-            {/* Redes sociales */}
-            <div className="flex flex-wrap gap-2 mt-6">
+            {/* Social links */}
+            <div className="flex flex-wrap gap-2 mt-4">
               {socials.map(({ Icon, href, title }) => (
                 <a
                   key={title}
@@ -53,29 +118,55 @@ export function Footer() {
                   title={title}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 rounded-xl border border-white/[0.06] text-gray-600
-                             hover:text-sky-400 hover:border-sky-500/30 hover:bg-sky-500/[0.06]
-                             transition-all duration-200"
+                  className="group relative flex items-center justify-center w-9 h-9 rounded-lg transition-all"
+                  style={{
+                    border: '1px solid var(--color-border-subtle)',
+                    color: 'var(--color-text-muted)',
+                    transitionDuration: 'var(--transition-base)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-border-hover)'
+                    e.currentTarget.style.color = 'var(--color-text-primary)'
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-border-subtle)'
+                    e.currentTarget.style.color = 'var(--color-text-muted)'
+                    e.currentTarget.style.background = 'transparent'
+                  }}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Columnas de links */}
+          {/* Navigation clusters */}
           {Object.entries(footerLinks).map(([col, links]) => (
             <div key={col}>
-              <h5 className="text-xs font-bold text-white uppercase tracking-widest mb-5">
+              <h5
+                className="font-mono text-[10px] tracking-[0.2em] uppercase mb-5"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
                 {col}
               </h5>
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-3 list-none">
                 {links.map(({ label, to }) => (
                   <li key={label}>
                     <Link
                       to={to}
                       onClick={() => window.scrollTo(0, 0)}
-                      className="text-sm text-gray-500 hover:text-white transition-colors duration-200"
+                      className="text-[13px] no-underline transition-all"
+                      style={{
+                        color: 'var(--color-text-secondary)',
+                        transitionDuration: 'var(--transition-fast)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--color-text-primary)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'var(--color-text-secondary)'
+                      }}
                     >
                       {label}
                     </Link>
@@ -86,24 +177,57 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="pt-6 border-t border-white/[0.05] flex flex-col md:flex-row justify-between items-center gap-3">
-          <span className="font-mono text-[11px] text-gray-700">
-            © {new Date().getFullYear()} IEEE Computer Society — UNI Student Chapter
-          </span>
-          <span className="font-mono text-[11px] text-gray-700">
-            Lima, Perú ·{' '}
+        {/* ─── Bottom Bar ─── */}
+        <div
+          className="py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+          style={{ borderTop: '1px solid var(--color-footer-border)' }}
+        >
+          {/* Terminal metadata block */}
+          <div className="flex items-center gap-6">
+            <span className="footer-terminal">
+              <span className="status-dot" />
+              sys.online
+            </span>
+            <span className="footer-terminal">
+              v{year}.1
+            </span>
+            <span className="footer-terminal">
+              node:lima-pe
+            </span>
+          </div>
+
+          {/* Copyright + external link */}
+          <div className="flex items-center gap-4">
+            <span
+              className="font-mono text-[10px] tracking-wider"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              © {year} IEEE CS UNI
+            </span>
+            <span
+              className="hidden md:inline-block w-px h-3"
+              style={{ background: 'var(--color-border-subtle)' }}
+            />
             <a
               href="https://computer.org"
               target="_blank"
               rel="noreferrer"
-              className="text-gray-700 hover:text-sky-500 transition-colors duration-200"
+              className="font-mono text-[10px] tracking-wider no-underline transition-colors"
+              style={{
+                color: 'var(--color-text-muted)',
+                transitionDuration: 'var(--transition-fast)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-accent-blue)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--color-text-muted)'
+              }}
             >
-              computer.org
+              computer.org ↗
             </a>
-          </span>
+          </div>
         </div>
-
       </div>
     </footer>
   )

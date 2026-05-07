@@ -138,6 +138,66 @@ html::before {
            text-[10px] font-mono
            bg-sky-500/10 border border-sky-500/20 text-sky-400/80;
   }
+
+  /* ── Navbar ─────────────────────────────────────── */
+  .nav-link {
+    @apply relative px-3 py-1.5 text-[13px] font-medium tracking-wide
+           no-underline rounded-lg;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-base),
+                background var(--transition-base);
+  }
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full;
+    height: 2px;
+    width: 0;
+    background: var(--color-nav-active-line);
+    transition: width var(--transition-premium);
+  }
+  .nav-link:hover {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .nav-link:hover::after {
+    width: 60%;
+  }
+  .nav-link-active {
+    color: var(--color-text-primary) !important;
+    background: var(--color-nav-active-glow);
+  }
+  .nav-link-active::after {
+    width: 80%;
+  }
+
+  /* ── Footer ─────────────────────────────────────── */
+  .footer-gradient-line {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-accent-blue) 30%,
+      var(--color-accent-violet) 70%,
+      transparent 100%
+    );
+    opacity: 0.15;
+  }
+
+  .footer-terminal {
+    @apply font-mono text-[10px] tracking-wide;
+    color: rgba(255, 255, 255, 0.18);
+  }
+  .footer-terminal .status-dot {
+    @apply inline-block w-1.5 h-1.5 rounded-full mr-1.5;
+    background: var(--color-accent-green);
+    animation: statusPulse 3s ease-in-out infinite;
+  }
+}
+
+/* ── Footer status pulse (outside @layer for keyframes) ── */
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
 }
 
 /* ─────────────────────────────────────────────
