@@ -35,6 +35,8 @@ export default {
         bounce:   { '0%,100%': { transform: 'rotate(45deg) translateY(0)' }, '50%': { transform: 'rotate(45deg) translateY(5px)' } },
         slideIn:  { from: { opacity: 0, transform: 'translateX(-16px)' }, to: { opacity: 1, transform: 'translateX(0)' } },
         glow:     { '0%,100%': { opacity: 0.4 }, '50%': { opacity: 1 } },
+        scan:     { '0%': { transform: 'translateY(-100%)' }, '100%': { transform: 'translateY(100vh)' } },
+        shimmer:  { '0%': { transform: 'translateX(-100%)' }, '100%': { transform: 'translateX(100%)' } },
       },
       animation: {
         'fade-up':  'fadeUp 0.6s ease both',
@@ -42,6 +44,8 @@ export default {
         'scroll-arrow': 'bounce 2s infinite',
         'slide-in': 'slideIn 0.35s ease both',
         'glow':     'glow 3s ease-in-out infinite',
+        'scan':     'scan 3s ease-in-out infinite',
+        'shimmer':  'shimmer 2s infinite',
       },
     },
   },
