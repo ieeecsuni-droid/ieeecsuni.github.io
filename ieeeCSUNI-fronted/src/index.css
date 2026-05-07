@@ -4,23 +4,8 @@
 
 /* ─────────────────────────────────────────────
    DESIGN TOKENS
-   Single source of truth. globals.css lo importa,
-   no redefinir tokens allá.
+   Tokens moved to tokens.css
 ───────────────────────────────────────────── */
-:root {
-  --b:       #020617;   /* fondo base */
-  --b2:      #0e1627;
-  --b3:      #131d35;
-  --c1:      #0ea5e9;   /* IEEE blue principal */
-  --c2:      #0284c7;
-  --c3:      #0369a1;
-  --gold:    #f5a800;
-  --fg:      #f1f5f9;
-  --fg2:     #94a3b8;
-  --fg3:     #334155;
-  --border:  rgba(14, 165, 233, 0.10);
-  --border2: rgba(14, 165, 233, 0.22);
-}
 
 /* ─────────────────────────────────────────────
    BASE
@@ -29,110 +14,41 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Outfit', sans-serif;
-  background: var(--b);
-  color: var(--fg);
+  background: var(--color-surface-base);
+  color: var(--color-text-primary);
   overflow-x: hidden;
   line-height: 1.6;
-  /* Sin position:relative aquí — los blobs necesitan
-     fixed y el body como scroll container normal */
 }
 
 /* ─────────────────────────────────────────────
    FONDO AMBIENTAL
-   Tres capas:
-     1. body::before  — blob azul superior derecha
-     2. body::after   — blob índigo inferior izquierda
-     3. html::before  — dot grid estático
-                        (en html para no pisar body::before/after)
-
-   IMPORTANTE para el contenido de la página:
-   Todo wrapper de sección debe tener
-   position: relative; z-index: 1;
-   de lo contrario los blobs tapan el contenido.
 ───────────────────────────────────────────── */
 
-/* Blob 1 — azul, superior derecha */
 body::before {
   content: '';
   position: fixed;
-  width: 700px;
-  height: 700px;
-  top: -180px;
-  right: -120px;
-  border-radius: 50%;
-  /* Aumentado de 0.12 → 0.22 para ser perceptible */
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.22), transparent 70%);
-  filter: blur(100px);
-  /* Aumentado de 0.5 → 0.75 */
-  opacity: 0.75;
+  inset: 0;
+  background-image: url('/noise.png');
+  background-repeat: repeat;
+  opacity: 0.04;
   pointer-events: none;
   z-index: 0;
-  animation: blob-drift-1 35s ease-in-out infinite alternate;
 }
 
-/* Blob 2 — índigo, inferior izquierda */
-body::after {
-  content: '';
-  position: fixed;
-  width: 600px;
-  height: 600px;
-  bottom: -80px;
-  left: -80px;
-  border-radius: 50%;
-  /* Aumentado de 0.08 → 0.15 */
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
-  filter: blur(90px);
-  opacity: 0.7;
-  pointer-events: none;
-  z-index: 0;
-  animation: blob-drift-2 45s ease-in-out infinite alternate;
-}
-
-/* Dot grid en html::before para no pisar los pseudo de body */
 html::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
   pointer-events: none;
-  /* z-index: 0 — encima de los blobs, debajo del contenido */
   z-index: 0;
 }
 
-@keyframes blob-drift-1 {
-  0%   { transform: translate(0,     0)     scale(1);    }
-  33%  { transform: translate(-80px, 60px)  scale(1.1);  }
-  66%  { transform: translate(40px,  100px) scale(0.95); }
-  100% { transform: translate(-40px, 30px)  scale(1.05); }
-}
-
-@keyframes blob-drift-2 {
-  0%   { transform: translate(0,     0)     scale(1);    }
-  33%  { transform: translate(60px, -80px)  scale(1.08); }
-  66%  { transform: translate(-50px, 40px)  scale(0.92); }
-  100% { transform: translate(30px, -30px)  scale(1.03); }
-}
-
-/* Blob central respirante (div .ambient-blob-center en JSX) */
 .ambient-blob-center {
-  position: fixed;
-  width: 400px;
-  height: 400px;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.07), transparent 70%);
-  filter: blur(100px);
-  pointer-events: none;
-  z-index: 0;
-  animation: blob-center-breathe 20s ease-in-out infinite;
-}
-
-@keyframes blob-center-breathe {
-  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1);    }
-  50%       { opacity: 0.9; transform: translateX(-50%) scale(1.15); }
+  display: none;
 }
 
 /* ─────────────────────────────────────────────
@@ -159,12 +75,13 @@ html::before {
   .btn-primary {
     @apply inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
            text-sm font-bold text-white cursor-pointer
-           transition-all duration-200 no-underline;
-    background: var(--c1);
+           transition-all no-underline;
+    background: var(--color-accent-blue);
+    transition-duration: var(--transition-fast);
   }
   .btn-primary:hover {
-    background: #38bdf8;
-    box-shadow: 0 0 28px rgba(14, 165, 233, 0.4);
+    background: var(--color-accent-blue-hover);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
     transform: translateY(-1px);
   }
   .btn-primary:active { transform: translateY(0); }
@@ -172,29 +89,31 @@ html::before {
   .btn-outline {
     @apply inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
            text-sm font-bold cursor-pointer
-           transition-all duration-200 no-underline;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: var(--fg2);
+           transition-all no-underline;
+    border: 1px solid var(--color-border-default);
+    color: var(--color-text-secondary);
     background: transparent;
+    transition-duration: var(--transition-fast);
   }
   .btn-outline:hover {
-    border-color: rgba(14, 165, 233, 0.35);
-    background: rgba(14, 165, 233, 0.06);
-    color: white;
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-elevated);
+    color: var(--color-text-primary);
     transform: translateY(-1px);
   }
   .btn-outline:active { transform: translateY(0); }
 
   /* Cards */
   .card-base {
-    @apply rounded-2xl border transition-all duration-300;
-    background: rgba(255, 255, 255, 0.015);
-    border-color: rgba(255, 255, 255, 0.06);
+    @apply rounded-2xl border transition-all;
+    background: var(--color-surface-elevated);
+    border-color: var(--color-border-subtle);
+    transition-duration: var(--transition-base);
   }
   .card-base:hover {
-    border-color: rgba(14, 165, 233, 0.2);
-    background: rgba(255, 255, 255, 0.03);
-    box-shadow: 0 0 24px rgba(14, 165, 233, 0.06);
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-overlay);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
   /* Form fields */

@@ -5,21 +5,36 @@ export default {
     extend: {
       fontFamily: {
         outfit: ['Outfit', 'sans-serif'],
+        clash: ['"Clash Display"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
+        surface: {
+          base: 'var(--color-surface-base)',
+          elevated: 'var(--color-surface-elevated)',
+          overlay: 'var(--color-surface-overlay)',
+        },
+        accent: {
+          blue: 'var(--color-accent-blue)',
+          'blue-hover': 'var(--color-accent-blue-hover)',
+          violet: 'var(--color-accent-violet)',
+          gold: 'var(--color-accent-gold)',
+          green: 'var(--color-accent-green)',
+          red: 'var(--color-accent-red)',
+        },
+        /* Fallbacks/aliases for existing classes to minimize immediate breakage */
         ieee: {
-          blue:      '#006699',
-          'blue-dk': '#004f77',
-          'blue-dp': '#003050',
-          'blue-lt': '#0088cc',
-          accent:    '#00d4ff',
-          gold:      '#f5a800',
+          blue: 'var(--color-accent-blue)',
+          'blue-dk': 'var(--color-surface-elevated)',
+          'blue-dp': 'var(--color-surface-overlay)',
+          'blue-lt': 'var(--color-accent-blue-hover)',
+          accent: 'var(--color-accent-blue)',
+          gold: 'var(--color-accent-gold)',
         },
         base: {
-          DEFAULT: '#0a0f1c',
-          2:       '#0e1627',
-          3:       '#131d35',
+          DEFAULT: 'var(--color-surface-base)',
+          2: 'var(--color-surface-elevated)',
+          3: 'var(--color-surface-overlay)',
         },
       },
       backgroundImage: {
