@@ -55,7 +55,7 @@ export function AppLoader({ onComplete }) {
       `}
     >
       {/* ── Background Atmosphere ── */}
-      <div className="absolute inset-0 bg-[url('/noise.svg')] bg-repeat opacity-[0.03] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/noise.png')] bg-repeat opacity-[0.03] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.05)_0%,transparent_60%)] pointer-events-none" />
       
       {/* Architectural Grid Lines */}
