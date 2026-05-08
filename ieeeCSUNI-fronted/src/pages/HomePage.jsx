@@ -1,11 +1,33 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
-import {
-  Shield,
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
+import { 
+  Shield, 
   ArrowUpRight,
+  Activity,
+  Layers,
+  ChevronRight,
   Crosshair,
+  Code2,
+  Terminal,
+  Cpu,
+  Globe,
+  Database,
+  Users,
+  Network,
+  Zap,
+  Star,
+  ExternalLink,
+  BookOpen,
+  Award,
+  Calendar
 } from 'lucide-react'
+
+import { EngineeringButton } from '../components/ui/EngineeringButton'
+import { AtmosphereTag } from '../components/ui/AtmosphereTag'
+import { ChapterStat } from '../components/ui/ChapterStat'
+import { ImpactDashboard } from '../components/ui/ImpactDashboard'
+import { projects, events } from '../data'
 
 // ─── Assets ────────────────────────────────────────────────────────
 const VIDEO_HERO = '/homepage.vid.mp4'
@@ -14,414 +36,324 @@ const F2 = '/F2.png'
 const F3 = '/F3.png'
 const F4 = '/F4.png'
 
-// ─── Helper Components ───────────────────────────────────────────
+// ─── Components ───────────────────────────────────────────────────
 
-const EngineeringButton = ({ children, to, className = "", secondary = false }) => (
-  <Link
-    to={to}
-    className={`group relative inline-flex items-center gap-4 md:gap-6 px-6 md:px-10 py-3 md:py-4.5 transition-all duration-700 overflow-hidden ${className}`}
-  >
-    <div className={`absolute inset-0 transition-all duration-700 ${
-      secondary
-        ? 'bg-transparent border border-white/10 group-hover:border-blue-500/40'
-        : 'bg-white/5 border border-white/10 backdrop-blur-md group-hover:bg-blue-600/10 group-hover:border-blue-500/50'
-    }`} />
-
-    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-    <span className="relative z-10 font-space-grotesk font-bold text-[9px] md:text-[10px] uppercase tracking-[0.25em] md:tracking-[0.4em] text-white/70 group-hover:text-white transition-all duration-500 whitespace-nowrap">
-      {children}
-    </span>
-
-    <div className="relative z-10 flex items-center shrink-0">
-      <div className="w-4 md:w-8 h-[1px] bg-white/10 group-hover:bg-blue-400 group-hover:w-8 md:group-hover:w-12 transition-all duration-700" />
-      <ArrowUpRight size={12} className="text-white/20 group-hover:text-blue-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
-    </div>
-
-    <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-white/30 group-hover:border-blue-400 transition-all" />
-    <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-white/30 group-hover:border-blue-400 transition-all" />
-  </Link>
-)
-
-const AtmosphereTag = ({ children, className = "" }) => (
-  <div className={`flex items-center gap-3 md:gap-4 ${className}`}>
-    <div className="w-6 md:w-12 h-px bg-blue-500/30" />
-    <span className="font-ibm-plex text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.6em] text-blue-500/80 drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]">
-      {children}
-    </span>
-    <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-blue-500/40 animate-pulse" />
-  </div>
-)
-
-const FloatingHud = ({ title, data, className = "", delay = 0 }) => (
+const FeatureCard = ({ title, description, icon: Icon, index }) => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ duration: 1, delay }}
-    className={`p-6 md:p-10 border border-white/10 bg-black/60 backdrop-blur-3xl rounded-sm relative group overflow-hidden ${className}`}
+    transition={{ duration: 0.8, delay: index * 0.1 }}
+    className="group relative p-8 border border-white/5 bg-white/[0.01] hover:bg-blue-600/[0.02] transition-all duration-700 overflow-hidden"
   >
+    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+      <Icon size={80} />
+    </div>
     <div className="relative z-10">
-      <div className="flex items-center justify-between mb-6 md:mb-10">
-        <h4 className="font-ibm-plex text-[9px] md:text-[11px] text-white/40 uppercase tracking-[0.2em] md:tracking-[0.4em] font-bold">
-          {title}
-        </h4>
-        <Crosshair size={12} className="text-blue-500/40" />
+      <div className="w-12 h-12 border border-white/10 flex items-center justify-center mb-8 group-hover:border-blue-500/40 transition-all">
+        <Icon size={20} className="text-white/40 group-hover:text-blue-400" />
       </div>
+      <h3 className="text-2xl font-space-grotesk font-bold text-white mb-4 tracking-tight group-hover:text-blue-400 transition-colors">
+        {title}
+      </h3>
+      <p className="text-[14px] text-white/30 leading-relaxed group-hover:text-white/50 transition-colors">
+        {description}
+      </p>
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/0 to-transparent group-hover:via-blue-500/30 transition-all duration-700" />
+  </motion.div>
+)
 
-      <div className="space-y-4 md:space-y-6">
-        {data.map((item, i) => (
-          <div key={i} className="flex justify-between items-center border-b border-white/[0.03] pb-3 md:pb-4 last:border-0">
-            <span className="font-ibm-plex text-[8px] md:text-[9px] text-white/20 uppercase tracking-[0.1em] md:tracking-[0.2em]">
-              {item.label}
-            </span>
-            <span className="font-mono text-[10px] md:text-[12px] text-white/70 text-right">
-              {item.value}
-            </span>
-          </div>
-        ))}
+const EventCardLarge = ({ event }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="group relative grid grid-cols-1 lg:grid-cols-2 gap-px bg-white/5 border border-white/5 overflow-hidden"
+  >
+    <div className="relative aspect-video lg:aspect-auto overflow-hidden bg-[#050816]">
+      {event.image ? (
+        <img src={event.image} alt={event.title} className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center opacity-20">
+          <Calendar size={80} />
+        </div>
+      )}
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
+      <div className="absolute top-6 left-6">
+        <div className="px-3 py-1 border border-blue-500/40 bg-blue-500/10 backdrop-blur-md">
+          <span className="font-space-grotesk text-[10px] font-bold text-blue-400 uppercase tracking-widest">PROXIMO_EVENTO</span>
+        </div>
       </div>
+    </div>
+    <div className="p-10 lg:p-16 flex flex-col justify-center bg-black">
+      <div className="flex items-center gap-4 mb-8">
+        <div className="flex flex-col">
+          <span className="font-ibm-plex text-[10px] text-white/30 uppercase tracking-[0.3em] font-bold">FECHA</span>
+          <span className="text-xl font-space-grotesk font-bold text-white">{event.date}</span>
+        </div>
+        <div className="w-px h-10 bg-white/10" />
+        <div className="flex flex-col">
+          <span className="font-ibm-plex text-[10px] text-white/30 uppercase tracking-[0.3em] font-bold">LUGAR</span>
+          <span className="text-xl font-space-grotesk font-bold text-white">{event.location}</span>
+        </div>
+      </div>
+      <h3 className="text-4xl lg:text-5xl font-space-grotesk font-bold text-white mb-8 tracking-tighter leading-none">
+        {event.title}
+      </h3>
+      <p className="text-lg text-white/40 mb-12 max-w-xl">
+        {event.description}
+      </p>
+      <EngineeringButton to="/eventos">Registrar Participación</EngineeringButton>
     </div>
   </motion.div>
 )
 
-const ChapterSection = ({ children, src, alt, coordinate }) => {
-  const ref = useRef(null)
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  })
-
-  const y = useTransform(scrollYProgress, [0, 1], [-100, 100])
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
-
-  return (
-    <section ref={ref} className="relative min-h-[80vh] md:min-h-screen flex items-center bg-black overflow-hidden py-48 md:py-64 scroll-mt-24">
-      <motion.div style={{ opacity }} className="absolute inset-0 z-0">
-        <motion.img
-          style={{ y }}
-          src={src}
-          alt={alt}
-          loading="lazy"
-          className="w-full h-[140%] object-cover brightness-[0.5] contrast-[1.15]"
-        />
-
-        <div className="absolute inset-0 bg-blue-900/10 mix-blend-screen opacity-40 md:opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_black_98%)]" />
-
-        <div className="absolute inset-6 md:inset-20 border border-white/5 pointer-events-none">
-          <div className="absolute top-1/2 left-3 -translate-y-1/2 font-mono text-[5px] md:text-[7px] text-white/10 uppercase vertical-text tracking-[1em]">
-            {coordinate}
-          </div>
+const ProjectItem = ({ project, index }) => (
+  <motion.div
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ delay: index * 0.1 }}
+    className="group flex flex-col p-8 border border-white/5 bg-white/[0.01] hover:bg-white/[0.02] transition-all"
+  >
+    <div className="flex items-start justify-between mb-8">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center bg-black">
+          <IconSelector type={project.category} />
         </div>
-      </motion.div>
-
-      <div className="relative z-10 w-full max-w-[1700px] mx-auto px-6 md:px-24 lg:px-40">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-32 items-center">
-          {children}
-        </div>
+        <span className="font-ibm-plex text-[10px] text-blue-500/60 uppercase tracking-[0.2em] font-bold">{project.category}</span>
       </div>
-    </section>
-  )
+      <div className="flex items-center gap-4">
+        <ExternalLink size={14} className="text-white/20 group-hover:text-white transition-colors" />
+      </div>
+    </div>
+    <h4 className="text-xl font-space-grotesk font-bold text-white mb-4 group-hover:text-blue-400 transition-colors">{project.title}</h4>
+    <p className="text-[13px] text-white/30 leading-relaxed mb-8 flex-1">{project.description}</p>
+    <div className="flex flex-wrap gap-2">
+      {project.tags.map(tag => (
+        <span key={tag} className="px-2 py-0.5 border border-white/5 bg-white/[0.02] font-mono text-[9px] text-white/40 uppercase">{tag}</span>
+      ))}
+    </div>
+  </motion.div>
+)
+
+const IconSelector = ({ type }) => {
+  if (type?.toLowerCase().includes('web')) return <Globe size={14} className="text-blue-500/60" />
+  if (type?.toLowerCase().includes('security')) return <Shield size={14} className="text-blue-500/60" />
+  if (type?.toLowerCase().includes('ai')) return <Cpu size={14} className="text-blue-500/60" />
+  return <Terminal size={14} className="text-blue-500/60" />
 }
 
 // ─── Main Content ────────────────────────────────────────────────
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col pt-32 md:pt-48 lg:pt-56 pb-20 overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0 scale-105">
+    <section className="relative h-screen flex items-center overflow-hidden bg-black">
+      {/* Cinematic Video Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <video
           autoPlay
           loop
           muted
           playsInline
-          preload="metadata"
-          aria-hidden="true"
-          className="w-full h-full object-cover opacity-80"
+          className="w-full h-full object-cover opacity-50 grayscale contrast-125"
         >
           <source src={VIDEO_HERO} type="video/mp4" />
         </video>
-
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black" />
-        <div className="absolute inset-0 bg-blue-950/10 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-blue-950/20 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,black_100%)]" />
+        <div className="absolute inset-0 bg-grid-animated opacity-5" />
       </div>
 
       <div className="relative z-10 w-full max-w-[1700px] mx-auto px-6 md:px-24 lg:px-40">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-20 items-center lg:items-start text-center lg:text-left">
-
-          <div className="lg:col-span-9">
-            <motion.div
-              initial={{ opacity: 0, filter: 'blur(20px)' }}
-              animate={{ opacity: 1, filter: 'blur(0px)' }}
-              transition={{ duration: 1.5 }}
-            >
-              <AtmosphereTag className="mb-6 md:mb-10 justify-center lg:justify-start lg:hidden">
-                LIMA • UNIVERSIDAD NACIONAL DE INGENIERÍA
-              </AtmosphereTag>
-
-              <h1 className="font-space-grotesk font-bold text-[clamp(2rem,7.5vw,10rem)] leading-[0.9] md:leading-[0.85] tracking-tight md:tracking-[-0.05em] uppercase text-white mb-8 md:mb-12">
-                <span className="block text-white">Ingeniería que sale</span>
-                <span className="block text-blue-600">del aula.</span>
-              </h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.6 }}
-              className="max-w-3xl mx-auto lg:mx-0 space-y-6 md:space-y-10"
-            >
-              <div className="space-y-4 md:space-y-6">
-                <p className="font-inter text-base md:text-2xl text-white/80 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                  Somos IEEE Computer Society UNI: una comunidad de estudiantes que convierte la teoría en proyectos, competencias, workshops y soluciones técnicas hechas desde la universidad.
-                </p>
-
-                <p className="font-inter text-xs md:text-lg text-white/30 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                  No venimos a repetir buzzwords. Venimos a programar, investigar, competir, fallar rápido y construir mejor.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 md:gap-6">
-                <EngineeringButton to="/proyectos" className="w-full sm:w-auto justify-center">
-                  Ver lo que construimos
-                </EngineeringButton>
-
-                <EngineeringButton to="/nosotros" secondary className="w-full sm:w-auto justify-center">
-                  Conocer la comunidad
-                </EngineeringButton>
-              </div>
-            </motion.div>
-          </div>
-
-          <div className="hidden md:block lg:col-span-3 mt-12 lg:mt-32">
-            <FloatingHud
-              title="Líneas de trabajo"
-              delay={1}
-              data={[
-                { label: "AI", value: "Modelos y datos" },
-                { label: "Security", value: "CTFs y defensa" },
-                { label: "Software", value: "Web, APIs, sistemas" },
-                { label: "Competitive", value: "Programación competitiva" },
-              ]}
-            />
-          </div>
-
+        <div className="max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <AtmosphereTag className="mb-12">IEEE Computer Society Chapter UNI</AtmosphereTag>
+            <h1 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,10rem)] leading-[0.85] tracking-tight uppercase text-white mb-12">
+              Building the Future<br />of <span className="text-blue-600">Computing.</span>
+            </h1>
+            <p className="text-xl md:text-3xl text-white/60 leading-relaxed font-inter max-w-3xl mb-16">
+              Comunidad de ingeniería, investigación y sistemas inteligentes en la Universidad Nacional de Ingeniería. Desde Lima para el mundo.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-8">
+              <EngineeringButton to="/contacto">Join IEEE CS UNI</EngineeringButton>
+              <EngineeringButton to="/eventos" secondary>View Upcoming Events</EngineeringButton>
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      <div className="absolute inset-0 z-20 pointer-events-none opacity-[0.05] mix-blend-overlay bg-[url('/cyber-texture.png')] bg-repeat" />
+      {/* Hero Stats Floating */}
+      <div className="absolute bottom-20 right-6 md:right-24 lg:right-40 hidden md:block">
+        <div className="flex items-center gap-16 border border-white/10 bg-white/[0.01] backdrop-blur-xl px-12 py-8">
+          <div className="flex flex-col">
+            <span className="font-ibm-plex text-[9px] tracking-[0.3em] text-white/20 uppercase font-bold mb-2">Miembros Activos</span>
+            <span className="text-2xl font-space-grotesk font-bold text-white tracking-tighter">120+</span>
+          </div>
+          <div className="w-px h-10 bg-white/10" />
+          <div className="flex flex-col">
+            <span className="font-ibm-plex text-[9px] tracking-[0.3em] text-white/20 uppercase font-bold mb-2">Impacto Real</span>
+            <span className="text-2xl font-space-grotesk font-bold text-white tracking-tighter">3° IEEE Xtreme</span>
+          </div>
+        </div>
+      </div>
     </section>
   )
 }
 
-const Chapter01 = () => {
+const AboutSection = () => {
+  const features = [
+    { title: 'Innovation', description: 'Desarrollamos soluciones tecnológicas reales que impactan en el ecosistema universitario y nacional.', icon: Zap },
+    { title: 'Research', description: 'Investigamos en áreas de vanguardia como Inteligencia Artificial, Ciberseguridad y Sistemas Distribuidos.', icon: BookOpen },
+    { title: 'Leadership', description: 'Formamos los próximos líderes de la industria tecnológica a través de gestión de proyectos reales.', icon: Award },
+  ]
+
   return (
-    <ChapterSection src={F1} alt="Inteligencia artificial aplicada" coordinate="APRENDIZAJE_TÉCNICO">
-      <div className="lg:col-span-7 text-center lg:text-left">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="space-y-8 md:space-y-12"
-        >
-          <AtmosphereTag className="justify-center lg:justify-start">
-            Artificial Intelligence
-          </AtmosphereTag>
-
-          <h2 className="font-space-grotesk font-bold text-[clamp(2.5rem,7vw,10rem)] text-white uppercase tracking-tighter leading-[0.85]">
-            IA aplicada,<br />no solo <span className="text-blue-600/70">teoría bonita</span>
-          </h2>
-
-          <p className="font-inter text-base md:text-2xl text-white/40 leading-relaxed mx-auto lg:mx-0 max-w-xl">
-            Trabajamos inteligencia artificial desde lo que sí se puede construir: modelos, datasets, notebooks, papers discutidos en comunidad y prototipos que se puedan explicar técnicamente.
-          </p>
-
-          <EngineeringButton to="/recursos" secondary>
-            Explorar recursos de IA
-          </EngineeringButton>
-        </motion.div>
+    <section className="relative py-48 px-6 md:px-24 lg:px-40 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src={F1} alt="" className="w-full h-full object-cover grayscale opacity-5 brightness-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
-
-      <div className="hidden lg:block lg:col-span-4 lg:col-start-9">
-        <FloatingHud
-          title="Enfoque técnico"
-          data={[
-            { label: "ML", value: "Modelado predictivo" },
-            { label: "CV", value: "Visión por computadora" },
-            { label: "DS", value: "Análisis de datos" },
-            { label: "NN", value: "Redes neuronales" },
-          ]}
-        />
-      </div>
-    </ChapterSection>
-  )
-}
-
-const Chapter02 = () => {
-  return (
-    <ChapterSection src={F2} alt="Ciberseguridad práctica" coordinate="CAPACITACIÓN_PRÁCTICA">
-      <div className="lg:col-span-7 lg:col-start-6 text-center lg:text-left">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="space-y-8 md:space-y-12"
-        >
-          <AtmosphereTag className="justify-center lg:justify-start">
-            Cybersecurity
-          </AtmosphereTag>
-
-          <h2 className="font-space-grotesk font-bold text-[clamp(2.5rem,7vw,10rem)] text-white uppercase tracking-tighter leading-[0.85]">
-            Seguridad que se aprende<br />tocando <span className="text-blue-600/70">sistemas reales</span>
-          </h2>
-
-          <p className="font-inter text-base md:text-2xl text-white/40 leading-relaxed mx-auto lg:mx-0 max-w-xl">
-            Organizamos espacios para practicar con retos, laboratorios y CTFs. La idea no es memorizar conceptos, sino entender cómo piensa un atacante y cómo responde un buen equipo técnico.
-          </p>
-
-          <EngineeringButton to="/eventos" secondary>
-            Ver workshops y CTFs
-          </EngineeringButton>
-        </motion.div>
-      </div>
-
-      <div className="lg:col-span-5 lg:col-start-1 lg:row-start-1">
-        <div className="relative p-8 md:p-14 border border-white/10 bg-black/70 backdrop-blur-3xl overflow-hidden text-center lg:text-left">
-          <div className="flex items-center gap-6 mb-10 justify-center lg:justify-start">
-            <div className="w-12 h-12 border border-blue-500/40 flex items-center justify-center">
-              <Shield size={24} className="text-blue-500" />
-            </div>
-
-            <div className="h-px w-20 bg-white/15" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-8">
-            <div>
-              <span className="block font-ibm-plex text-[9px] text-white/25 uppercase mb-3">
-                Formato
-              </span>
-              <div className="font-mono text-xl md:text-2xl text-white">
-                LABS
-              </div>
-            </div>
-
-            <div>
-              <span className="block font-ibm-plex text-[9px] text-white/25 uppercase mb-3">
-                Dinámica
-              </span>
-              <div className="font-mono text-xl md:text-2xl text-white">
-                CTFs
-              </div>
-            </div>
-          </div>
+      <div className="relative z-10 max-w-[1700px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {features.map((f, i) => (
+            <FeatureCard key={f.title} {...f} index={i} />
+          ))}
         </div>
       </div>
-    </ChapterSection>
+    </section>
   )
 }
 
-const Chapter03 = () => {
+const EventsSection = () => {
+  const featuredEvent = events.find(e => e.featured) || events[0]
+
   return (
-    <ChapterSection src={F3} alt="Desarrollo de software" coordinate="DESARROLLO_REAL">
-      <div className="lg:col-span-9 text-center lg:text-left">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="space-y-12 md:space-y-16"
-        >
-          <AtmosphereTag className="justify-center lg:justify-start">
-            Software Engineering
-          </AtmosphereTag>
+    <section className="relative py-48 px-6 md:px-24 lg:px-40 bg-white/[0.01] overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src={F2} alt="" className="w-full h-full object-cover grayscale opacity-5 brightness-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+      </div>
+      <div className="relative z-10 max-w-[1700px] mx-auto">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12 mb-24">
+          <div>
+            <AtmosphereTag className="mb-10">Actividades y Capacitación</AtmosphereTag>
+            <h2 className="text-5xl md:text-8xl font-space-grotesk font-bold text-white tracking-tighter leading-none uppercase">
+              Próximos <span className="text-blue-600">Eventos.</span>
+            </h2>
+          </div>
+          <EngineeringButton to="/eventos" secondary>Ver Todos los Eventos</EngineeringButton>
+        </div>
 
-          <h2 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,12rem)] text-white uppercase tracking-tighter leading-[0.8]">
-            Software hecho en equipo,<br /><span className="text-blue-600">con estándar técnico</span>
+        {featuredEvent && <EventCardLarge event={featuredEvent} />}
+      </div>
+    </section>
+  )
+}
+
+const ProjectsSection = () => {
+  return (
+    <section className="relative py-48 px-6 md:px-24 lg:px-40 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src={F3} alt="" className="w-full h-full object-cover grayscale opacity-5 brightness-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+      </div>
+      <div className="relative z-10 max-w-[1700px] mx-auto">
+        <div className="max-w-3xl mb-32">
+          <AtmosphereTag className="mb-10">Research & Development</AtmosphereTag>
+          <h2 className="text-5xl md:text-8xl font-space-grotesk font-bold text-white tracking-tighter leading-none uppercase mb-12">
+            Iniciativas y <span className="text-blue-600">Proyectos.</span>
           </h2>
-
-          <p className="font-inter text-xl md:text-2xl text-white/45 mx-auto lg:mx-0 max-w-3xl">
-            Construimos proyectos como se trabaja fuera del salón: con repositorios, revisiones, diseño de interfaces, APIs, documentación y decisiones técnicas que se puedan defender.
+          <p className="text-xl text-white/40 leading-relaxed font-inter">
+            No solo estudiamos ingeniería. La construimos. Explora nuestras iniciativas de desarrollo y repositorios técnicos oficiales.
           </p>
+        </div>
 
-          <div className="flex flex-wrap justify-center lg:justify-start gap-8 md:gap-16 pt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-px bg-white/5 border border-white/5">
+          {projects.map((p, i) => (
+            <ProjectItem key={p.title} project={p} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const GlobalSection = () => {
+  return (
+    <section className="py-48 px-6 md:px-24 lg:px-40 border-t border-white/5 bg-white/[0.01]">
+      <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+        <div>
+          <AtmosphereTag className="mb-10">Global Network</AtmosphereTag>
+          <h2 className="text-5xl md:text-8xl font-space-grotesk font-bold text-white tracking-tighter leading-[0.85] uppercase mb-12">
+            From UNI<br />to the <span className="text-blue-600">World.</span>
+          </h2>
+          <p className="text-xl text-white/40 leading-relaxed font-inter mb-16">
+            Pertenecer a IEEE Computer Society te conecta con una red global de más de 400,000 profesionales. Accede a becas, publicaciones internacionales y networking de élite.
+          </p>
+          <div className="space-y-6 mb-16">
             {[
-              { val: 'UNI', label: 'Base universitaria' },
-              { val: '4', label: 'Líneas técnicas' },
-              { val: 'Build', label: 'Aprender construyendo' },
+              { title: 'International Opportunities', desc: 'Networking con ingenieros de Silicon Valley y Europa.' },
+              { title: 'Research Paths', desc: 'Respaldo institucional para publicación de papers.' },
+              { title: 'Elite Networking', desc: 'Acceso exclusivo a la biblioteca técnica IEEE Xplore.' },
             ].map((item, i) => (
-              <div key={i} className="text-center lg:text-left">
-                <div className="font-space-grotesk text-2xl md:text-4xl font-bold text-white mb-1">
-                  {item.val}
-                </div>
-                <div className="font-ibm-plex text-[8px] md:text-[9px] text-white/25 uppercase tracking-widest">
-                  {item.label}
+              <div key={i} className="flex gap-6 group">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 transition-all group-hover:scale-150" />
+                <div>
+                  <h4 className="text-white font-space-grotesk font-bold mb-1">{item.title}</h4>
+                  <p className="text-white/30 text-[13px]">{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
+          <EngineeringButton to="/nosotros" secondary>Explorar Oportunidades</EngineeringButton>
+        </div>
 
-          <div className="pt-8 flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
-            <EngineeringButton to="/proyectos">
-              Ver proyectos
-            </EngineeringButton>
-
-            <EngineeringButton to="/equipo" secondary>
-              Ver equipo
-            </EngineeringButton>
+        <div className="relative aspect-square border border-white/5 bg-black overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1),transparent_70%)]" />
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+            className="w-[80%] h-[80%] border border-dashed border-white/10 rounded-full flex items-center justify-center"
+          >
+            <div className="w-[60%] h-[60%] border border-white/5 rounded-full" />
+          </motion.div>
+          <div className="absolute flex flex-col items-center">
+            <Globe size={48} className="text-blue-500/40 mb-6" />
+            <span className="font-space-grotesk font-bold text-white tracking-[0.5em] text-[10px] uppercase">Global_Presence</span>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </ChapterSection>
+    </section>
   )
 }
 
-const Chapter04 = () => {
+const JoinSection = () => {
   return (
-    <section className="relative min-h-[80vh] md:min-h-screen bg-black overflow-hidden flex items-center border-t border-white/10 py-24 md:py-48">
+    <section className="relative py-64 px-6 md:px-24 lg:px-40 text-center border-t border-white/5 overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img
-          src={F4}
-          alt=""
-          loading="lazy"
-          className="w-full h-full object-cover opacity-45 grayscale contrast-[1.3]"
-        />
-
+        <img src={F4} alt="" className="w-full h-full object-cover grayscale opacity-10 brightness-50" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
       </div>
-
-      <div className="relative z-10 w-full max-w-[1700px] mx-auto px-6 md:px-24 lg:px-40 text-center lg:text-left">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="max-w-6xl space-y-16 md:space-y-24"
-        >
-          <div className="space-y-6 md:space-y-8">
-            <AtmosphereTag className="justify-center lg:justify-start">
-              Únete a la Comunidad
-            </AtmosphereTag>
-
-            <h2 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,12rem)] text-white uppercase tracking-tighter leading-[0.82]">
-              Si quieres mejorar,<br /><span className="text-blue-600">construye con otros</span>
-            </h2>
-          </div>
-
-          <p className="font-inter text-lg md:text-4xl text-white/35 leading-relaxed mx-auto lg:mx-0 max-w-4xl">
-            IEEE CS UNI es para estudiantes que quieren exigirse más: participar en proyectos, entrenar para competencias, asistir a workshops y rodearse de gente que también está aprendiendo en serio.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-8">
-            <EngineeringButton to="/contacto" className="w-full sm:w-auto justify-center">
-              Quiero participar
-            </EngineeringButton>
-
-            <EngineeringButton to="/eventos" secondary className="w-full sm:w-auto justify-center">
-              Ver actividades
-            </EngineeringButton>
-          </div>
-        </motion.div>
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
+        <AtmosphereTag className="mb-12 justify-center">Protocolo de Integración</AtmosphereTag>
+        <h2 className="text-5xl md:text-9xl font-space-grotesk font-bold text-white tracking-tighter leading-[0.8] uppercase mb-12">
+          Don’t just study engineering.<br /><span className="text-blue-600">Build it with us.</span>
+        </h2>
+        <p className="text-xl md:text-3xl text-white/30 font-inter mb-20 max-w-2xl">
+          Forma parte de la comunidad técnica más importante de la facultad. Desarrolla proyectos reales, compite y lidera.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-8">
+          <EngineeringButton to="/contacto">Unirme al Capítulo</EngineeringButton>
+          <EngineeringButton to="/eventos" secondary>Próximos Workshops</EngineeringButton>
+        </div>
       </div>
     </section>
   )
@@ -430,38 +362,15 @@ const Chapter04 = () => {
 // ─── Main Page Export ───────────────────────────────────────────
 
 export default function HomePage() {
-  const { scrollYProgress } = useScroll()
-
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  })
-
   return (
-    <div className="bg-black text-white selection:bg-blue-600/50 selection:text-white font-inter">
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-[300]"
-        style={{ scaleX }}
-      />
-
+    <main className="bg-black text-white selection:bg-blue-600/30 overflow-hidden font-inter">
       <Hero />
-      <Chapter01 />
-      <Chapter02 />
-      <Chapter03 />
-      <Chapter04 />
-
-      <style>{`
-        body {
-          background-color: black;
-          overscroll-behavior: none;
-        }
-
-        .vertical-text {
-          writing-mode: vertical-rl;
-          text-orientation: mixed;
-        }
-      `}</style>
-    </div>
+      <AboutSection />
+      <ImpactDashboard />
+      <EventsSection />
+      <ProjectsSection />
+      <GlobalSection />
+      <JoinSection />
+    </main>
   )
 }

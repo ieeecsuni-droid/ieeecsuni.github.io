@@ -7,6 +7,9 @@ import { AtmosphereTag } from '../components/ui/AtmosphereTag'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { Github, ExternalLink, X, Layers, Activity, GitCommit, GitPullRequest, Crosshair, Cpu, Terminal } from 'lucide-react'
 
+const F3 = '/F3.png'
+const F4 = '/F4.png'
+
 // ─── Modal ───────────────────────────────────────────────────
 
 const ProjectModal = ({ project, onClose }) => {
@@ -161,7 +164,8 @@ export default function ProyectosPage() {
       {/* ══ HERO ══════════════════════════════════════════════ */}
       <section className="relative pt-48 pb-32 px-6 md:px-24 border-b border-white/5 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[#02040a]" />
+          <img src={F3} alt="" className="w-full h-full object-cover grayscale opacity-10 brightness-50" />
+          <div className="absolute inset-0 bg-[#02040a]/90" />
           <div className="absolute inset-0 opacity-40">
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-blue-500/[0.03] animate-[spin_60s_linear_infinite]" />
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] rounded-full border border-blue-500/[0.02] animate-[spin_90s_linear_infinite_reverse]" />
@@ -252,8 +256,12 @@ export default function ProyectosPage() {
       )}
 
       {/* ══ GRID ══════════════════════════════════════════════ */}
-      <section className="py-48 px-6 md:px-24">
-        <div className="max-w-[1700px] mx-auto">
+      <section className="relative py-48 px-6 md:px-24 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={F4} alt="" className="w-full h-full object-cover grayscale opacity-5 brightness-50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        </div>
+        <div className="relative z-10 max-w-[1700px] mx-auto">
           
           <div className="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24 border-b border-white/5 pb-16">
             <div>

@@ -9,6 +9,9 @@ import { AtmosphereTag } from '../components/ui/AtmosphereTag'
 import { Terminal, Crosshair, Activity, Layers } from 'lucide-react'
 import tuVideo from '../../public/videoplayback.mp4'
 
+const F1 = '/F1.png'
+const F2 = '/F2.png'
+
 const FILTERS = ['Todos', 'Taller', 'Competencia', 'Charla', 'Hackathon', 'Conferencia']
 
 const impactStats = [
@@ -120,8 +123,12 @@ export default function EventosPage() {
       </section>
 
       {/* ══ TIMELINE & FILTERS ═══════════════════════════════════ */}
-      <section className="py-48 px-6 md:px-24">
-        <div className="max-w-[1700px] mx-auto">
+      <section className="relative py-48 px-6 md:px-24 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={F1} alt="" className="w-full h-full object-cover grayscale opacity-5 brightness-50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
+        </div>
+        <div className="relative z-10 max-w-[1700px] mx-auto">
           
           <div className="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24 border-b border-white/5 pb-16">
             <div>
@@ -155,8 +162,12 @@ export default function EventosPage() {
       </section>
 
       {/* ══ SUBMIT PROPOSAL ══════════════════════════════════════ */}
-      <section className="py-48 px-6 md:px-24 bg-white/[0.01] border-t border-white/5">
-        <div className="max-w-[1700px] mx-auto reveal grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-24 items-center">
+      <section className="relative py-48 px-6 md:px-24 bg-white/[0.01] border-t border-white/5 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={F2} alt="" className="w-full h-full object-cover grayscale opacity-10 brightness-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent" />
+        </div>
+        <div className="relative z-10 max-w-[1700px] mx-auto reveal grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-24 items-center">
           
           <div className="max-w-3xl">
             <AtmosphereTag className="mb-10">Participación Técnica</AtmosphereTag>
