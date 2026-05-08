@@ -1,14 +1,21 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { IEEECSLogo } from '../../assets/IEEECSLogo'
 import { navLinks } from '../../data'
+import { Menu, X } from 'lucide-react'
+
+const UNILogo = ({ className = "" }) => (
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/d/da/Escudo_UNI.png"
+    alt="Logo UNI"
+    className={`${className} object-contain filter brightness-0 invert opacity-80 group-hover:opacity-100 transition-opacity`}
+  />
+)
 
 export function Navbar() {
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [menuAnimating, setMenuAnimating] = useState(false)
-  const menuRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -16,274 +23,129 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Close menu on route change
-  useEffect(() => { closeMenu() }, [location.pathname])
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-  function openMenu() {
-    setMenuOpen(true)
-    setMenuAnimating(true)
-  }
-
-  function closeMenu() {
-    setMenuAnimating(false)
-    // Wait for exit animation before unmounting
-    const timer = setTimeout(() => setMenuOpen(false), 350)
-    return () => clearTimeout(timer)
-  }
-
   const isActive = (to) => location.pathname === to
 
   return (
     <>
-      {/* ─── Main Nav Bar ─── */}
+      {/* ─── Plan V2: System Control Layer (LeetCode Inspired) ─── */}
       <nav
         id="main-navbar"
-        className="fixed top-0 left-0 right-0 z-[200] transition-all"
-        style={{
-          height: '64px',
-          background: scrolled
-            ? 'var(--color-nav-surface-scrolled)'
-            : 'var(--color-nav-surface)',
-          borderBottom: `1px solid ${scrolled
-            ? 'var(--color-nav-border-scrolled)'
-            : 'var(--color-nav-border)'}`,
-          backdropFilter: scrolled ? 'blur(16px) saturate(1.2)' : 'blur(8px)',
-          transitionDuration: '450ms',
-          transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ease-out flex items-center border-b h-16
+          ${scrolled
+            ? 'bg-[#05070C]/40 backdrop-blur-xl border-white/[0.12] shadow-[0_4px_30px_rgba(0,0,0,0.1)]'
+            : 'bg-[#05070C]/80 backdrop-blur-sm border-white/[0.06]'
+          }
+        `}
       >
-        <div className="h-full max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between">
+        <div className="relative w-full max-w-[1440px] mx-auto px-8 md:px-12 flex items-center h-full">
 
-          {/* ─── Brand Identity ─── */}
-          <Link
-            to="/"
-            className="flex items-center gap-3 no-underline group shrink-0"
-            onClick={() => window.scrollTo(0, 0)}
-          >
-            <div className="relative">
-              <IEEECSLogo size={32} />
-              {/* Subtle ambient glow behind logo */}
-              <div
-                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{
-                  background: 'radial-gradient(circle, var(--color-accent-blue-dim), transparent 70%)',
-                  filter: 'blur(8px)',
-                  transitionDuration: '600ms',
-                }}
-              />
-            </div>
-            <div className="flex flex-col">
-              <span
-                className="text-[13px] font-semibold tracking-[0.01em] leading-tight"
-                style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-heading)' }}
-              >
-                IEEE CS
-              </span>
-              <span
-                className="font-mono text-[9px] tracking-[0.2em] uppercase leading-tight mt-0.5"
-                style={{ color: 'var(--color-text-muted)' }}
-              >
-                UNI Chapter
-              </span>
-            </div>
-          </Link>
-
-          {/* ─── Desktop Navigation ─── */}
-          <ul className="hidden lg:flex items-center gap-0.5 list-none absolute left-1/2 -translate-x-1/2">
-            {navLinks.map(({ to, label }) => (
-              <li key={to}>
-                <Link
-                  to={to}
-                  onClick={() => window.scrollTo(0, 0)}
-                  className={`nav-link ${isActive(to) ? 'nav-link-active' : ''}`}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* ─── Right Actions ─── */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* ─── Identity Group (Left) ─── */}
+          <div className="flex items-center">
             <Link
-              to="/contacto"
+              to="/"
+              className="flex items-center no-underline group shrink-0"
               onClick={() => window.scrollTo(0, 0)}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-[12px] font-semibold tracking-wide no-underline transition-all"
-              style={{
-                background: 'var(--color-accent-blue-dim)',
-                color: 'var(--color-accent-blue-hover)',
-                border: '1px solid rgba(14, 165, 233, 0.12)',
-                transitionDuration: 'var(--transition-base)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(14, 165, 233, 0.2)'
-                e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.25)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-accent-blue-dim)'
-                e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.12)'
-              }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-              Únete
+              <div className="flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                <IEEECSLogo size={28} className="text-white" />
+              </div>
             </Link>
           </div>
 
-          {/* ─── Mobile Menu Toggle ─── */}
-          <button
-            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer border-none transition-all"
-            style={{
-              background: menuOpen ? 'rgba(255,255,255,0.04)' : 'transparent',
-              transitionDuration: 'var(--transition-base)',
-            }}
-            onClick={() => menuOpen ? closeMenu() : openMenu()}
-            aria-label="Menú de navegación"
-            aria-expanded={menuOpen}
-          >
-            {/* Top line */}
-            <span
-              className="absolute block w-[18px] h-[1.5px] rounded-full transition-all"
-              style={{
-                background: 'var(--color-text-secondary)',
-                transform: menuAnimating
-                  ? 'rotate(45deg) translateY(0)'
-                  : 'translateY(-4px)',
-                transitionDuration: '350ms',
-                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-            />
-            {/* Middle line */}
-            <span
-              className="absolute block w-[18px] h-[1.5px] rounded-full transition-all"
-              style={{
-                background: 'var(--color-text-secondary)',
-                opacity: menuAnimating ? 0 : 1,
-                transform: menuAnimating ? 'scaleX(0)' : 'scaleX(1)',
-                transitionDuration: '250ms',
-              }}
-            />
-            {/* Bottom line */}
-            <span
-              className="absolute block w-[18px] h-[1.5px] rounded-full transition-all"
-              style={{
-                background: 'var(--color-text-secondary)',
-                transform: menuAnimating
-                  ? 'rotate(-45deg) translateY(0)'
-                  : 'translateY(4px)',
-                transitionDuration: '350ms',
-                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-            />
-          </button>
+          {/* Desktop Nav Links (Plan V2 - Absolute Centered) */}
+          <ul className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 m-0 p-0 list-none">
+            {navLinks.map(({ to, label }) => {
+              const active = isActive(to)
+              return (
+                <li key={to}>
+                  <Link
+                    to={to}
+                    onClick={() => window.scrollTo(0, 0)}
+                    className={`group relative text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 no-underline py-1
+                      ${active ? 'text-white' : 'text-white/40 hover:text-white'}
+                    `}
+                    style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+                  >
+                    {label}
+                    {/* Elegant active indicator (Expanding Blue Line) */}
+                    <span
+                      className={`absolute -bottom-2.5 left-0 h-[2px] bg-blue-500 transition-transform origin-center duration-300 ease-out
+                        ${active ? 'w-full scale-x-100' : 'w-full scale-x-0 group-hover:scale-x-100'}
+                      `}
+                    />
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+
+          {/* ─── Right Actions (Absolute Right) ─── */}
+          <div className="flex items-center gap-6 ml-auto">
+            <a 
+              href="https://www.uni.edu.pe/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center group no-underline transition-all duration-300 ml-4"
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden border border-white/5 group-hover:border-white/20 transition-all flex items-center justify-center bg-white/[0.02]">
+                <UNILogo className="w-6 h-6" />
+              </div>
+            </a>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="lg:hidden p-2 text-white/70 hover:text-white transition-colors bg-white/5 rounded-md"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* ─── Mobile Menu Panel ─── */}
-      {menuOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-[198] lg:hidden"
-            style={{
-              background: 'rgba(3, 7, 18, 0.6)',
-              backdropFilter: 'blur(4px)',
-              opacity: menuAnimating ? 1 : 0,
-              transition: 'opacity 350ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-            onClick={closeMenu}
-          />
-
-          {/* Panel */}
-          <div
-            ref={menuRef}
-            className="fixed top-[64px] left-0 right-0 z-[199] lg:hidden"
-            style={{
-              background: 'var(--color-nav-surface-scrolled)',
-              borderBottom: '1px solid var(--color-nav-border-scrolled)',
-              transform: menuAnimating ? 'translateY(0)' : 'translateY(-8px)',
-              opacity: menuAnimating ? 1 : 0,
-              transition: 'all 350ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
+      {/* ─── Mobile Menu Panel (Plan V2: Full-Screen Terminal) ─── */}
+      <div
+        className={`fixed inset-0 z-[200] bg-[#05070C] flex flex-col transition-transform duration-500 ease-out
+          ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        <div className="flex items-center justify-between p-6 border-b border-white/[0.06]">
+          <div />
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="p-2 text-white/50 hover:text-white bg-white/5 rounded-full"
           >
-            {/* Inner content */}
-            <div className="px-6 py-5 flex flex-col gap-1">
-              {navLinks.map(({ to, label }, i) => (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => { window.scrollTo(0, 0); closeMenu() }}
-                  className="group flex items-center gap-3 py-3 px-4 rounded-lg text-[14px] font-medium no-underline transition-all"
-                  style={{
-                    color: isActive(to)
-                      ? 'var(--color-text-primary)'
-                      : 'var(--color-text-secondary)',
-                    background: isActive(to)
-                      ? 'var(--color-nav-active-glow)'
-                      : 'transparent',
-                    transitionDuration: 'var(--transition-base)',
-                    transitionDelay: menuAnimating ? `${i * 40}ms` : '0ms',
-                    transform: menuAnimating ? 'translateX(0)' : 'translateX(-12px)',
-                    opacity: menuAnimating ? 1 : 0,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive(to)) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive(to)) e.currentTarget.style.background = 'transparent'
-                  }}
-                >
-                  {/* Active indicator line */}
-                  {isActive(to) && (
-                    <span
-                      className="w-[3px] h-5 rounded-full shrink-0"
-                      style={{ background: 'var(--color-nav-active-line)' }}
-                    />
-                  )}
-                  {label}
-                </Link>
-              ))}
+            <X size={20} />
+          </button>
+        </div>
 
-              {/* Mobile CTA */}
-              <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
-                <Link
-                  to="/contacto"
-                  onClick={() => { window.scrollTo(0, 0); closeMenu() }}
-                  className="flex items-center justify-center gap-2 py-3 rounded-lg text-[13px] font-semibold no-underline transition-all"
-                  style={{
-                    background: 'var(--color-accent-blue-dim)',
-                    color: 'var(--color-accent-blue-hover)',
-                    border: '1px solid rgba(14, 165, 233, 0.12)',
-                    transitionDuration: 'var(--transition-base)',
-                  }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-                  Únete al capítulo
-                </Link>
-              </div>
-            </div>
-
-            {/* Terminal-style footer */}
-            <div
-              className="px-6 py-3 flex items-center justify-between"
-              style={{ borderTop: '1px solid var(--color-border-subtle)' }}
+        <div className="flex-1 overflow-y-auto px-8 py-12 flex flex-col gap-8">
+          {navLinks.map(({ to, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`text-3xl font-bold tracking-tighter no-underline transition-all
+                ${isActive(to) ? 'text-blue-500' : 'text-white/40 hover:text-white'}
+              `}
+              onClick={() => setMenuOpen(false)}
             >
-              <span className="footer-terminal">
-                <span className="status-dot" />
-                sys.nav.ready
-              </span>
-              <span className="font-mono text-[9px] tracking-wider" style={{ color: 'var(--color-text-muted)' }}>
-                IEEE CS UNI © {new Date().getFullYear()}
-              </span>
-            </div>
-          </div>
-        </>
-      )}
+              {label}
+            </Link>
+          ))}
+        </div>
+
+
+      </div>
     </>
   )
 }

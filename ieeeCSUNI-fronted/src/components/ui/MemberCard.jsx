@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Mail, Check, ExternalLink, Instagram, Linkedin, Github } from 'lucide-react'
+import { Mail, Check, Instagram, Linkedin, Github, Terminal, Activity } from 'lucide-react'
 
 export function MemberCard({ member }) {
-  const { initials, name, role, bio, gradient, email, photo, social } = member
+  const { initials, name, role, bio, email, photo, social } = member
   const [copied, setCopied] = useState(false)
 
   const handleCopyEmail = () => {
@@ -13,95 +13,101 @@ export function MemberCard({ member }) {
   }
 
   return (
-    <div className="relative group p-[1px] rounded-[2.5rem] bg-white/5 hover:bg-gradient-to-br hover:from-sky-500 hover:to-purple-600 transition-all duration-700">
+    <article className="group relative flex flex-col h-full bg-[#ffffff01] border border-white/[0.04] rounded-sm overflow-hidden transition-all duration-500 hover:border-white/[0.15] hover:bg-[#ffffff03]">
       
-      {/* Contenedor Principal */}
-      <div className="bg-[#030712] rounded-[2.4rem] p-6 text-center h-full flex flex-col items-center relative overflow-hidden">
+      {/* ── LEFT ACCENT BORDER ── */}
+      <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/50 transition-all duration-700 z-20 pointer-events-none" />
+
+      <div className="p-6 md:p-8 flex flex-col flex-1 relative">
         
-        {/* Efecto de Escaneo Láser Vertical */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">
-          <div className="absolute top-0 left-0 w-full h-[3px] bg-sky-400 shadow-[0_0_20px_#0ea5e9] animate-scan-agresivo" />
+        {/* ── SYSTEM METADATA HEADER ── */}
+        <div className="flex items-start justify-between mb-8 pb-4 border-b border-white/[0.04]">
+          <div className="flex flex-col gap-1">
+            <span className="font-mono text-[9px] tracking-[0.2em] text-white/30 uppercase">
+              MEMBER PROFILE
+            </span>
+            <div className="flex items-center gap-2">
+               <span className="w-1.5 h-1.5 bg-emerald-500/80" />
+               <span className="font-mono text-[8px] tracking-widest text-emerald-500/50 uppercase">UNI_MEMBER</span>
+            </div>
+          </div>
+          <Activity className="w-4 h-4 text-white/20" />
         </div>
 
-        {/* Contenedor de Imagen/Avatar */}
-        <div className="relative w-full aspect-square max-w-[180px] mb-6 px-2">
-          <div className="relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-white/5 group-hover:border-sky-500/50 transition-colors duration-500 shadow-2xl">
-            
+        {/* ── IDENTITY LAYER ── */}
+        <div className="flex items-center gap-5 mb-6">
+          <div className="relative w-16 h-16 shrink-0 bg-[#030408] border border-white/[0.06] flex items-center justify-center overflow-hidden">
             {photo ? (
-              <>
-                {/* Imagen con filtro de color sutil que se limpia al hover */}
-                <img 
-                  src={photo} 
-                  alt={name} 
-                  className="w-full h-full object-cover grayscale-[0.8] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-                />
-                {/* Overlay de gradiente sobre la foto */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-transparent opacity-60" />
-              </>
+              <img 
+                src={photo} 
+                alt={name} 
+                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+              />
             ) : (
-              /* Fallback si no hay foto */
-              <div 
-                className="w-full h-full flex items-center justify-center"
-                style={{ background: gradient }}
-              >
-                <span className="text-4xl font-black text-white">{initials}</span>
-              </div>
+              <span className="font-mono text-xl text-white/30">{initials}</span>
             )}
+            <div className="absolute inset-0 bg-[#050816]/20 mix-blend-multiply pointer-events-none" />
           </div>
-          
-          {/* Badge de "Status" en la esquina de la foto */}
-          <div className="absolute -bottom-2 -right-1 bg-sky-600 text-[8px] font-black px-3 py-1 rounded-lg shadow-lg border border-sky-400 z-10">
-            UNI_CERTIFIED
+
+          <div className="flex flex-col">
+            <h3 
+              className="text-lg font-light text-white/90 group-hover:text-white transition-colors tracking-tight leading-snug mb-1"
+              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+            >
+              {name}
+            </h3>
+            <span className="font-mono text-[10px] tracking-widest text-amber-500/80 uppercase">
+              {role}
+            </span>
           </div>
         </div>
 
-        {/* Info del Integrante */}
-        <div className="mb-4">
-          <h3 className="text-xl font-black text-white leading-tight mb-1 group-hover:text-sky-400 transition-colors">
-            {name}
-          </h3>
-          <p className="font-mono text-[10px] tracking-[0.2em] text-sky-500 uppercase font-bold">
-            {role}
-          </p>
-        </div>
-
-        {/* Bio con estilo de terminal */}
-        <div className="relative mb-6 flex-1">
-          <p className="text-[11px] leading-relaxed text-gray-500 italic px-4">
-            <span className="text-sky-500/50 mr-1 font-mono"> {">"} </span>
+        {/* ── BIO / DATA PAYLOAD ── */}
+        <div className="flex-1 mb-8">
+          <p 
+            className="text-[13px] text-white/40 leading-relaxed"
+            style={{ fontFamily: '"Inter", sans-serif' }}
+          >
             {bio}
           </p>
         </div>
 
-        {/* Redes Sociales Rápidas */}
-        <div className="flex gap-4 mb-6 opacity-40 group-hover:opacity-100 transition-opacity">
-            <Github size={16} className="cursor-pointer hover:text-white" />
-            <Linkedin size={16} className="cursor-pointer hover:text-sky-400" />
-            <Instagram size={16} className="cursor-pointer hover:text-pink-500" />
+        {/* ── COMMUNICATION PROTOCOL ── */}
+        <div className="mt-auto flex flex-col gap-3">
+          <div className="flex gap-2">
+            {social?.github && (
+              <a href={social.github} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
+                <Github className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {social?.linkedin && (
+              <a href={social.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
+                <Linkedin className="w-3.5 h-3.5" />
+              </a>
+            )}
+            {social?.instagram && (
+              <a href={social.instagram} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
+                <Instagram className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+
+          <button 
+            onClick={handleCopyEmail}
+            className={`flex items-center justify-between px-4 py-2.5 border transition-all duration-300 ${
+              copied 
+              ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400' 
+              : 'border-white/[0.06] bg-[#030408] text-white/40 hover:text-white hover:border-white/[0.2]'
+            }`}
+          >
+            <span className="font-mono text-[9px] tracking-widest uppercase">
+              {copied ? 'CORREO_COPIADO' : 'COPIAR_CORREO'}
+            </span>
+            {copied ? <Check className="w-3.5 h-3.5" /> : <Mail className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100" />}
+          </button>
         </div>
 
-        {/* Botón de Contacto Interactivo */}
-        <button 
-          onClick={handleCopyEmail}
-          className={`w-full py-4 rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 border ${
-            copied 
-            ? 'bg-green-600 border-green-400 text-white shadow-[0_0_20px_rgba(34,197,94,0.4)]' 
-            : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-sky-600 hover:border-sky-400'
-          }`}
-        >
-          {copied ? (
-            <>
-              <Check size={16} />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Copiado al portapapeles</span>
-            </>
-          ) : (
-            <>
-              <Mail size={16} />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Obtener Gmail</span>
-            </>
-          )}
-        </button>
       </div>
-    </div>
+    </article>
   )
 }

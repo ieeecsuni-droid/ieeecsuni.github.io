@@ -1,71 +1,29 @@
-/**
- * EventosPage v2 — IEEE CS UNI
- *
- * Cambios vs v1:
- * ─ Eliminado: Orb, HeroTag, SectionLabel, SectionTitle (inconsistentes)
- * ─ Eliminado: scanline overlay en video (ruido innecesario)
- * ─ Eliminado: Play icon sobre video con autoplay (contradictorio)
- * ─ Eliminado: `rounded-[3rem]`, `rounded-[2.5rem]` (valores arbitrarios)
- * ─ Eliminado: PlusCircle size={200} como decoración de fondo
- * ─ Añadido: dot grid background (consistente con HomePage/NosotrosPage)
- * ─ Añadido: sección de proof/impact (credibilidad ejecutada)
- * ─ Añadido: empty state institucional
- * ─ Mejorado: copy — menos informal, más aspiracional técnico
- * ─ Mejorado: sistema de filtros — pills limpias sin contenedor innecesario
- * ─ Mejorado: sección "Proponer evento" — sin PlusCircle decorativo
- * ─ Mejorado: ritmo visual entre secciones con border-t consistente
- */
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { events } from '../data'
 import { EventCard } from '../components/ui/EventCard'
-import { Calendar, ArrowUpRight, ArrowRight } from 'lucide-react'
+import { Terminal, ArrowUpRight } from 'lucide-react'
 import tuVideo from '../../public/videoplayback.mp4'
-
-// ─── Datos ────────────────────────────────────────────────────
 
 const FILTERS = ['Todos', 'Taller', 'Competencia', 'Charla', 'Hackathon', 'Conferencia']
 
 const impactStats = [
-  { value: '6+', label: 'Eventos realizados' },
-  { value: '200+', label: 'Asistentes totales' },
-  { value: '4', label: 'Categorías técnicas' },
-  { value: '100%', label: 'Entrada libre' },
+  { value: '6+', label: 'Eventos Técnicos' },
+  { value: '200+', label: 'Asistentes Promedio' },
+  { value: '4', label: 'Líneas de Enfoque' },
+  { value: '100%', label: 'Entrada Libre' },
 ]
-
-// ─── Componentes locales ───────────────────────────────────────
-
-function Badge({ children }) {
-  return (
-    <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 text-[11px] font-mono font-medium tracking-widest text-gray-500 uppercase">
-      {children}
-    </span>
-  )
-}
-
-function SectionMeta({ tag, title, className = '' }) {
-  return (
-    <div className={className}>
-      <span className="font-mono text-[10px] tracking-[0.3em] text-sky-500/60 uppercase">{tag}</span>
-      <h2 className="mt-2 font-black tracking-tight leading-[0.88] text-white text-5xl md:text-6xl">
-        {title}
-      </h2>
-    </div>
-  )
-}
 
 function FilterChip({ label, isActive, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-xl text-[10px] font-mono font-bold uppercase tracking-widest
-                  transition-all duration-200 ${
-        isActive
-          ? 'bg-sky-500 text-white shadow-[0_0_12px_rgba(14,165,233,0.3)]'
-          : 'border border-white/[0.06] text-gray-500 hover:text-gray-300 hover:border-white/[0.12]'
-      }`}
+      className={`px-4 py-2 text-[10px] font-mono tracking-[0.15em] uppercase transition-all duration-300 border
+        ${isActive
+          ? 'bg-white text-[#050816] border-white'
+          : 'bg-transparent text-white/40 border-white/[0.08] hover:text-white/80 hover:border-white/[0.2]'
+        }`}
     >
       {label}
     </button>
@@ -74,21 +32,22 @@ function FilterChip({ label, isActive, onClick }) {
 
 function EmptyState({ filter }) {
   return (
-    <div className="py-32 flex flex-col items-center justify-center border border-dashed border-white/[0.06] rounded-2xl text-center">
-      <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-6">
-        <Calendar className="w-6 h-6 text-gray-700" />
+    <div className="py-24 w-full flex flex-col items-center justify-center border border-dashed border-white/[0.08] bg-[#ffffff01] text-center">
+      <div className="w-12 h-12 flex items-center justify-center mb-4">
+        <Terminal className="w-6 h-6 text-white/20" />
       </div>
-      <h3 className="font-bold text-base text-gray-400 mb-2">
-        Sin eventos en <span className="text-white">{filter}</span>
+      <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-2">
+        QUERY: {filter}
+      </span>
+      <h3 className="font-light text-lg text-white/60 mb-2 tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+        No se encontraron eventos.
       </h3>
-      <p className="text-gray-600 text-sm max-w-xs leading-relaxed">
-        Estamos preparando nuevas actividades. Explora otras categorías o vuelve pronto.
+      <p className="text-white/40 text-[13px] max-w-sm" style={{ fontFamily: '"Inter", sans-serif' }}>
+        La categoría solicitada no tiene eventos programados actualmente. Explora otras opciones o revisa nuevamente más adelante.
       </p>
     </div>
   )
 }
-
-// ─── Página principal ──────────────────────────────────────────
 
 export default function EventosPage() {
   useScrollReveal()
@@ -98,128 +57,136 @@ export default function EventosPage() {
     ? events
     : events.filter(e => e.type === activeFilter)
 
+  // Separar el primer evento destacado del resto
+  const featuredEvents = filtered.filter(e => e.featured)
+  const mainFeatured = featuredEvents.length > 0 ? featuredEvents[0] : null
+  const gridEvents = mainFeatured ? filtered.filter(e => e.id !== mainFeatured.id) : filtered
+
   return (
-    <main className="pt-16 bg-[#020617] text-white min-h-screen">
-
-      {/* ══ HERO ══════════════════════════════════════════════
-          Dot grid + dos columnas: copy institucional + video.
-          Sin scanlines, sin Play icon sobre video en autoplay.
-      ═════════════════════════════════════════════════════ */}
-      <section className="relative px-6 md:px-20 pt-6 pb-0 overflow-hidden">
-
-        {/* Dot grid — sistema compartido con HomePage/NosotrosPage */}
-        <div
-          className="absolute inset-0 pointer-events-none"
+    <main className="bg-[#050816] text-white min-h-screen selection:bg-amber-500/30 selection:text-white overflow-hidden">
+      
+      {/* Background Architectural Blueprint System */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-            backgroundSize: '40px 40px',
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
+            maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020617]/80 via-transparent to-[#020617] pointer-events-none" />
+        {/* Timeline Vector (Vertical line) */}
+        <div className="absolute left-6 lg:left-20 top-0 bottom-0 w-[1px] bg-white/[0.04] hidden md:block" />
+        <div className="absolute right-6 lg:right-20 top-0 bottom-0 w-[1px] bg-white/[0.04] hidden md:block" />
+      </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center py-20">
+      {/* ══ HERO & OPS CENTER ════════════════════════════════════ */}
+      <section className="relative z-10 min-h-[85vh] flex items-center pt-32 pb-24 px-6 md:px-12 lg:px-20 overflow-hidden border-b border-white/[0.04]">
+        
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <video
+            src={tuVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-25 filter grayscale contrast-[1.2]"
+          />
+          {/* Architectural Overlays */}
+          <div className="absolute inset-0 bg-[#050816]/60 mix-blend-multiply pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/80 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050816] via-[#050816]/50 to-transparent pointer-events-none" />
+          
+          {/* Technical framing lines */}
+          <div className="absolute top-8 left-8 w-12 h-12 border-t border-l border-white/20 pointer-events-none" />
+          <div className="absolute bottom-8 right-8 w-12 h-12 border-b border-r border-white/20 pointer-events-none" />
+          <div className="absolute bottom-8 left-8 font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase pointer-events-none">
+            REC • LIMA_PE
+          </div>
+        </div>
 
-          {/* Copy */}
-          <div className="reveal">
-            <Badge>IEEE CS UNI Live</Badge>
+        <div className="relative z-10 max-w-7xl mx-auto w-full">
+          
+          <div className="reveal max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+              <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                Eventos y Charlas
+              </span>
+            </div>
 
-            <h1 className="mt-6 font-black tracking-tighter leading-[0.85] text-[clamp(48px,7vw,88px)]">
-              <span className="text-white">Conecta,</span>
-              <br />
-              <span className="text-sky-500 italic">crea</span>
-              <span className="text-white"> &amp;</span>
-              <br />
-              <span className="text-white">compite.</span>
+            <h1 
+              className="text-[clamp(48px,7vw,88px)] font-light tracking-tight leading-[1.05] text-white mb-6"
+              style={{ fontFamily: '"Space Grotesk", "Clash Display", sans-serif' }}
+            >
+              EVENTOS Y<br />
+              <span className="text-white/30">TALLERES.</span>
             </h1>
 
-            <div className="mt-8 mb-6 flex items-center gap-4">
-              <div className="w-8 h-px bg-sky-500" />
-              <span className="font-mono text-[10px] tracking-[0.3em] text-gray-600 uppercase">
-                Workshops · Hackathons · Conferencias
-              </span>
-            </div>
-
-            <p className="max-w-md text-base text-gray-400 leading-relaxed mb-8">
-              Cada evento es una oportunidad real de crecimiento técnico. Desde
-              ciberseguridad hasta programación competitiva — aquí construyes
-              tu perfil profesional desde la universidad.
+            <p 
+              className="max-w-md text-[15px] md:text-[16px] text-white/50 leading-relaxed mb-10"
+              style={{ fontFamily: '"Inter", "Satoshi", sans-serif' }}
+            >
+              Registro cronológico de eventos académicos, talleres de ingeniería y conferencias de tecnología. Fomentamos el aprendizaje continuo a través de experiencias de alto impacto.
             </p>
 
-            {/* Live indicator */}
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl
-                            border border-white/[0.06] bg-white/[0.02]">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="font-mono text-[10px] tracking-widest text-gray-400 uppercase">
-                Próximo evento en 3 días
+            <div className="inline-flex items-center gap-3 px-4 py-2 border border-white/[0.08] bg-[#ffffff05] backdrop-blur-sm">
+              <span className="w-1 h-4 bg-emerald-500" />
+              <span className="font-mono text-[10px] tracking-widest text-white/70 uppercase">
+                Actividades en curso
               </span>
-            </div>
-          </div>
-
-          {/* Video — limpio, sin efectos que compitan */}
-          <div className="reveal reveal-delay-2 relative group">
-            <div
-              className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100
-                          bg-gradient-to-br from-sky-500/15 to-transparent
-                          blur-md transition-opacity duration-700 pointer-events-none"
-            />
-            <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/[0.08] shadow-2xl">
-              <video
-                src={tuVideo}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              />
-              {/* Gradient overlay — solo en la parte inferior para legibilidad */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#020617]/40 to-transparent pointer-events-none" />
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* ══ PROOF STRIP ═══════════════════════════════════════
-          Sección nueva — credibilidad ejecutada.
-          Mismo sistema de grid que HomePage y NosotrosPage.
-      ═════════════════════════════════════════════════════ */}
-      <div className="border-y border-white/[0.05] bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto px-6 md:px-20">
-          <div className="grid grid-cols-2 md:grid-cols-4">
+      {/* ══ TELEMETRY STRIP ══════════════════════════════════════ */}
+      <div className="relative z-10 border-y border-white/[0.04] bg-[#ffffff01]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.04] md:divide-y-0 divide-y">
             {impactStats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className={`py-8 px-8 flex flex-col gap-1.5
-                  ${i < impactStats.length - 1 ? 'border-r border-white/[0.05]' : ''}
-                  ${i < 2 ? 'border-b md:border-b-0 border-white/[0.05]' : ''}
-                `}
-              >
-                <div className="font-black text-3xl md:text-4xl tracking-tight text-white leading-none">
+              <div key={stat.label} className={`py-10 md:py-12 ${i % 2 !== 0 ? 'pl-8 md:pl-12' : 'pr-8 md:pr-12'}`}>
+                <div 
+                  className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white/90 mb-2"
+                  style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+                >
                   {stat.value}
                 </div>
-                <p className="text-[10px] text-gray-600 font-medium uppercase tracking-wider">
+                <div className="font-mono text-[9px] tracking-[0.2em] text-white/30 uppercase">
                   {stat.label}
-                </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ══ EXPLORADOR DE EVENTOS ═════════════════════════════
-          Header editorial + filtros limpios + grid.
-      ═════════════════════════════════════════════════════ */}
-      <section className="py-28 px-6 md:px-20">
+      {/* ══ EVENT TIMELINE ═══════════════════════════════════════ */}
+      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto">
 
-          {/* Header */}
-          <div className="reveal flex flex-col md:flex-row md:items-end justify-between gap-10 mb-14">
-            <SectionMeta
-              tag="Timeline"
-              title={<>Próximas<br />actividades.</>}
-            />
+          {/* Timeline Header & Filters */}
+          <div className="reveal flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 border-b border-white/[0.04] pb-12">
+            <div>
+              <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4 block flex items-center gap-4">
+                <div className="w-6 h-px bg-white/20" />
+                Calendario de Actividades
+              </span>
+              <h2 
+                className="text-4xl md:text-5xl font-light tracking-tight text-white/90"
+                style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+              >
+                Nuestros<br />
+                <span className="text-white/30">Eventos.</span>
+              </h2>
+            </div>
 
-            {/* Filtros */}
             <div className="flex flex-wrap gap-2">
               {FILTERS.map(f => (
                 <FilterChip
@@ -232,11 +199,17 @@ export default function EventosPage() {
             </div>
           </div>
 
-          {/* Grid de eventos */}
+          {/* Content Grid */}
           {filtered.length > 0 ? (
-            <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map(ev => (
-                <EventCard key={ev.id} event={ev} />
+            <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {/* Featured Event takes full row if it exists */}
+              {mainFeatured && (
+                <EventCard event={{ ...mainFeatured, featured: true }} />
+              )}
+              
+              {/* Standard Events flow normally */}
+              {gridEvents.map(ev => (
+                <EventCard key={ev.id} event={{ ...ev, featured: false }} />
               ))}
             </div>
           ) : (
@@ -245,84 +218,56 @@ export default function EventosPage() {
             </div>
           )}
 
-          {/* CTA de comunidad */}
-          <div className="reveal mt-20 pt-12 border-t border-white/[0.05] flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-            <div>
-              <p className="text-white font-bold text-lg mb-1">
-                ¿No quieres perderte ningún evento?
-              </p>
-              <p className="text-gray-500 text-sm">
-                Únete a la comunidad y recibe notificaciones directas.
-              </p>
-            </div>
-            <a
-              href='https://www.whatsapp.com/channel/0029Vb7ULtl9MF99Felbfi1c'
-              target='_blank'
-              rel="noopener noreferrer"
-              className="flex-shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-xl
-                         bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm
-                         transition-all duration-200 hover:shadow-[0_0_24px_rgba(14,165,233,0.35)]"
-            >
-              Unirme a la comunidad
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* ══ PROPONER EVENTO ═══════════════════════════════════
-          Simplificado — sin PlusCircle giant, sin rounded-[3rem].
-          Dos columnas: copy izquierda, CTA derecha.
-          Mismo estilo que el CTA final de NosotrosPage.
-      ═════════════════════════════════════════════════════ */}
-      <div className="border-t border-white/[0.05]" />
-      <section className="py-28 px-6 md:px-20 bg-white/[0.01]">
-        <div className="max-w-7xl mx-auto reveal">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-12">
-
-            <div className="max-w-lg">
-              <span className="font-mono text-[10px] tracking-[0.3em] text-sky-500/50 uppercase block mb-4">
-                Collaborate
-              </span>
-              <h2 className="font-black text-4xl md:text-5xl tracking-tight leading-[0.9] text-white mb-5">
-                ¿Quieres compartir<br />
-                <span className="text-sky-500">tus conocimientos?</span>
-              </h2>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Si tienes un tema que dominas o quieres liderar un taller técnico,
-                te damos la plataforma, la audiencia y el soporte logístico completo.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 flex-shrink-0">
-              {/* Highlights del programa */}
-              <div className="space-y-2.5 mb-2">
-                {[
-                  'Audiencia técnica de la UNI',
-                  'Soporte logístico completo',
-                  'Visibilidad en la comunidad IEEE',
-                ].map(item => (
-                  <div key={item} className="flex items-center gap-2.5 text-sm text-gray-500">
-                    <div className="w-1 h-1 rounded-full bg-sky-500/60 flex-shrink-0" />
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                to="/contacto"
-                onClick={() => window.scrollTo(0, 0)}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl
-                           border border-sky-500/30 text-sky-400 font-bold text-sm
-                           hover:bg-sky-500 hover:text-white hover:border-sky-500
-                           transition-all duration-200"
-              >
-                Enviar propuesta
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-            </div>
-
+      {/* ══ SUBMIT PROPOSAL ══════════════════════════════════════ */}
+      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto reveal flex flex-col md:flex-row items-center justify-between gap-16">
+          
+          <div className="max-w-lg">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4 block">
+              Participación
+            </span>
+            <h2 
+              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white/90 mb-6"
+              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+            >
+              Proponer un<br />
+              <span className="text-white/30">Nuevo Evento.</span>
+            </h2>
+            <p 
+              className="text-[14px] text-white/50 leading-relaxed mb-8"
+              style={{ fontFamily: '"Inter", sans-serif' }}
+            >
+              Si tienes expertise en arquitectura cloud, seguridad ofensiva, sistemas embebidos o algoritmia avanzada, te brindamos la infraestructura para liderar un workshop.
+            </p>
+            
+            <Link
+              to="/contacto"
+              onClick={() => window.scrollTo(0, 0)}
+              className="group inline-flex items-center gap-3 px-6 py-3 border border-white/10 text-[11px] font-mono tracking-widest uppercase text-white/70 hover:bg-white hover:text-[#050816] hover:border-white transition-all duration-300"
+            >
+              Contactar Equipo
+              <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
+            </Link>
           </div>
+
+          <div className="w-full max-w-sm flex flex-col gap-1 font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] border-l border-white/[0.04] pl-8">
+            <div className="py-3 border-b border-white/[0.04] flex justify-between">
+              <span>Público</span>
+              <span className="text-white/60">Comunidad UNI</span>
+            </div>
+            <div className="py-3 border-b border-white/[0.04] flex justify-between">
+              <span>Logística</span>
+              <span className="text-white/60">Facilitada</span>
+            </div>
+            <div className="py-3 border-b border-white/[0.04] flex justify-between">
+              <span>Alcance</span>
+              <span className="text-white/60">Red Global IEEE</span>
+            </div>
+          </div>
+
         </div>
       </section>
 

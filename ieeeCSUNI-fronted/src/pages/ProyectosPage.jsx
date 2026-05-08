@@ -1,44 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { projects } from '../data/data'
 import ProjectCard from '../components/ui/ProjectCard'
-import { Orb } from '../components/ui/HeroElements'
-import { Github, ExternalLink, X, Users as UsersIcon, ArrowUpRight, Layers, ChevronRight } from 'lucide-react'
-import MascotaImg from '../../public/codenixLogo.png'
+import { Github, ExternalLink, X, Layers, Activity, GitCommit, GitPullRequest } from 'lucide-react'
 
-/* ─── Noise Texture SVG (depth) ─── */
-const NoiseBg = () => (
-  <svg className="pointer-events-none fixed inset-0 w-full h-full opacity-[0.035] z-0" xmlns="http://www.w3.org/2000/svg">
-    <filter id="noise">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-      <feColorMatrix type="saturate" values="0" />
-    </filter>
-    <rect width="100%" height="100%" filter="url(#noise)" />
-  </svg>
-)
+// ─── Modal ───────────────────────────────────────────────────
 
-/* ─── Grid Pattern ─── */
-const GridPattern = () => (
-  <div
-    className="pointer-events-none absolute inset-0 z-0"
-    style={{
-      backgroundImage: `
-        linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px)
-      `,
-      backgroundSize: '60px 60px',
-    }}
-  />
-)
-
-/* ─── Stat Pill ─── */
-const StatPill = ({ label, value }) => (
-  <div className="flex flex-col items-center px-6 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.07] backdrop-blur-sm">
-    <span className="text-2xl font-black text-white tabular-nums">{value}</span>
-    <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-sky-500/70 mt-0.5">{label}</span>
-  </div>
-)
-
-/* ─── Modal ─── */
 const ProjectModal = ({ project, onClose }) => {
   const overlayRef = useRef(null)
 
@@ -52,105 +18,101 @@ const ProjectModal = ({ project, onClose }) => {
     }
   }, [onClose])
 
+  const displayImage = project.image || (project.images && project.images.length > 0 ? project.images[0] : 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
       {/* Backdrop */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-[#020617]/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-[#050816]/95 backdrop-blur-md"
         onClick={onClose}
         style={{ animation: 'fadeIn 200ms ease forwards' }}
       />
 
-      {/* Modal card */}
+      {/* Modal Box */}
       <div
-        className="relative w-full max-w-5xl flex flex-col md:flex-row overflow-hidden rounded-[2rem] border border-white/[0.08] shadow-[0_0_80px_rgba(0,0,0,0.8)]"
-        style={{
-          background: 'linear-gradient(135deg, #0d1829 0%, #0b1120 50%, #070e1a 100%)',
-          animation: 'modalIn 280ms cubic-bezier(0.34,1.56,0.64,1) forwards'
-        }}
+        className="relative w-full max-w-5xl flex flex-col md:flex-row bg-[#050816] border border-white/[0.1] shadow-2xl overflow-hidden"
+        style={{ animation: 'modalIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
       >
-        {/* Accent glow top-left */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-sky-500/10 blur-[80px] rounded-full pointer-events-none" />
-
-        {/* Close */}
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-red-500/80 hover:border-red-500/50 transition-all duration-200 active:scale-90"
+          className="absolute top-4 right-4 z-50 p-2 text-white/50 hover:text-white bg-black/50 backdrop-blur-sm border border-white/[0.08] transition-all duration-200"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* ── LEFT: Image ── */}
-        <div className="md:w-[55%] relative overflow-hidden min-h-[260px] md:min-h-0">
+        {/* Left: Image / Visuals */}
+        <div className="md:w-[50%] relative min-h-[300px] md:min-h-0 border-b md:border-b-0 md:border-r border-white/[0.06] bg-[#030408]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.05] pointer-events-none z-10" />
+          
           <img
-            src={project.image}
-            className="absolute inset-0 w-full h-full object-cover"
+            src={displayImage}
+            className="absolute inset-0 w-full h-full object-cover grayscale opacity-70"
             alt={project.title}
-            style={{ filter: 'brightness(0.6) saturate(0.8)' }}
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0b1120]/80 md:to-[#0b1120]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1120] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[#050816]/40 pointer-events-none mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-transparent pointer-events-none" />
 
-          {/* Status badge */}
-          <div className="absolute top-5 left-5">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[9px] font-black tracking-[0.2em] uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Active
-            </span>
-          </div>
-
-          {/* Tags bottom */}
-          <div className="absolute bottom-5 left-5 flex flex-wrap gap-2">
-            {project.tags?.map(t => (
-              <span
-                key={t}
-                className="px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg border border-sky-500/40 bg-sky-500/10 text-sky-300 backdrop-blur-sm"
-              >
-                {t}
-              </span>
-            ))}
+          {/* Telemetry overlay */}
+          <div className="absolute bottom-6 left-6 z-20 flex flex-col gap-1 font-mono text-[9px] tracking-[0.2em] text-white/40 uppercase">
+            <span>PROJECT_ID: {project.id || 'N/A'}</span>
+            <span>STATUS: DEPLOYED</span>
+            <span>ACCESO: PÚBLICO</span>
           </div>
         </div>
 
-        {/* ── RIGHT: Info ── */}
-        <div className="md:w-[45%] p-8 md:p-10 flex flex-col relative">
-          {/* Index number watermark */}
-          <span className="absolute top-8 right-10 text-[80px] font-black text-white/[0.03] leading-none select-none pointer-events-none tabular-nums">
-            {String(projects.findIndex(p => p.id === project.id) + 1).padStart(2, '0')}
-          </span>
-
+        {/* Right: Technical Specs */}
+        <div className="md:w-[50%] p-8 md:p-12 flex flex-col bg-[#ffffff02]">
           <div className="flex-1">
-            {/* Category */}
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="w-3 h-3 text-sky-500" />
-              <span className="text-[9px] font-black tracking-[0.3em] uppercase text-sky-500">
-                {project.category ?? 'IEEE CS UNI'}
+            <div className="flex items-center gap-2 mb-6">
+              <Layers className="w-3.5 h-3.5 text-white/40" />
+              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
+                {project.category ?? 'DESARROLLO TECNOLÓGICO'}
               </span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black leading-[0.95] uppercase text-white mb-5 tracking-tight">
+            <h2 
+              className="text-3xl md:text-4xl font-light text-white mb-6 tracking-tight leading-tight"
+              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+            >
               {project.title}
             </h2>
 
-            <div className="w-12 h-[2px] bg-sky-500 mb-6 rounded-full" />
+            <div className="w-8 h-px bg-white/20 mb-6" />
 
-            <p className="text-gray-400 text-sm leading-relaxed mb-8">
+            <p 
+              className="text-white/50 text-[14px] leading-relaxed mb-8"
+              style={{ fontFamily: '"Inter", sans-serif' }}
+            >
               {project.description}
             </p>
 
-            {/* Core Team */}
+            {/* Tech Stack */}
+            <div className="mb-8">
+              <h4 className="font-mono text-[9px] text-white/30 tracking-[0.2em] uppercase mb-3">Tecnologías Usadas</h4>
+              <div className="flex flex-wrap gap-2">
+                {project.tags?.map(t => (
+                  <span
+                    key={t}
+                    className="px-2.5 py-1 border border-white/[0.06] bg-white/[0.02] text-[10px] font-mono uppercase tracking-widest text-white/60"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Members / Contributors */}
             {project.members?.length > 0 && (
-              <div className="mb-8">
-                <h4 className="flex items-center gap-2 text-[9px] font-black text-sky-500/80 uppercase tracking-[0.25em] mb-4">
-                  <UsersIcon className="w-3.5 h-3.5" /> Core Team
-                </h4>
+              <div className="mb-10">
+                <h4 className="font-mono text-[9px] text-white/30 tracking-[0.2em] uppercase mb-3">Contribuidores</h4>
                 <div className="flex flex-wrap gap-2">
                   {project.members.map(member => (
                     <div
                       key={member}
-                      className="px-3 py-1.5 rounded-xl text-[11px] font-bold text-gray-300 border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] hover:border-sky-500/30 hover:text-white transition-all duration-200"
+                      className="px-3 py-1.5 text-[11px] text-white/60 border border-white/[0.04] bg-white/[0.01]"
                     >
                       {member}
                     </div>
@@ -160,26 +122,35 @@ const ProjectModal = ({ project, onClose }) => {
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3 mt-auto">
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 hover:text-white transition-all duration-200 group"
-            >
-              <Github className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              Repositorio
-            </a>
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest bg-sky-600 hover:bg-sky-500 text-white transition-all duration-200 shadow-lg shadow-sky-900/40 group"
-            >
-              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              Demo Live
-            </a>
+          {/* Action Links */}
+          <div className="flex gap-4 mt-auto pt-6 border-t border-white/[0.04]">
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/[0.1] bg-white/[0.02] hover:bg-white text-[10px] font-mono tracking-widest uppercase text-white/70 hover:text-[#050816] hover:border-white transition-all duration-300"
+              >
+                <Github className="w-4 h-4" />
+                Source Code
+              </a>
+            )}
+            {project.link && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/20 bg-white/10 hover:bg-white hover:text-[#050816] text-[10px] font-mono tracking-widest uppercase text-white transition-all duration-300"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Live Demo
+              </a>
+            )}
+            {!project.link && !project.github && (
+              <span className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/[0.04] bg-white/[0.01] text-[10px] font-mono tracking-widest uppercase text-white/20">
+                Código Privado
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -187,7 +158,7 @@ const ProjectModal = ({ project, onClose }) => {
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes modalIn {
-          from { opacity: 0; transform: scale(0.94) translateY(12px) }
+          from { opacity: 0; transform: scale(0.98) translateY(10px) }
           to   { opacity: 1; transform: scale(1) translateY(0) }
         }
       `}</style>
@@ -195,9 +166,25 @@ const ProjectModal = ({ project, onClose }) => {
   )
 }
 
-/* ══════════════════════════════════
-   PAGE COMPONENT
-══════════════════════════════════ */
+// ─── Filter Chip ───────────────────────────────────────────────
+
+function FilterChip({ label, isActive, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 border text-[10px] font-mono tracking-[0.15em] uppercase transition-all duration-300
+        ${isActive
+          ? 'bg-white text-[#050816] border-white'
+          : 'bg-transparent text-white/40 border-white/[0.08] hover:text-white/80 hover:border-white/[0.2]'
+        }`}
+    >
+      {label === 'all' ? 'TODOS' : label}
+    </button>
+  )
+}
+
+// ─── Main Page ─────────────────────────────────────────────────
+
 export default function ProyectosPage() {
   const [selectedProject, setSelectedProject] = useState(null)
   const [filter, setFilter] = useState('all')
@@ -205,176 +192,229 @@ export default function ProyectosPage() {
   const allTags = ['all', ...new Set(projects.flatMap(p => p.tags ?? []))]
   const filtered = filter === 'all' ? projects : projects.filter(p => p.tags?.includes(filter))
 
+  const featuredProject = projects[0] // Treat the first project as the flagship
+
   return (
-    <main className="relative pt-24 bg-[#020617] min-h-screen text-white pb-32 overflow-x-hidden">
-      <NoiseBg />
+    <main className="bg-[#050816] min-h-screen text-white selection:bg-amber-500/30 selection:text-white overflow-x-hidden">
+      
+      {/* ══ BACKGROUND SYSTEM ══════════════════════════════════ */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
+            maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)'
+          }}
+        />
+        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_rgba(76,29,149,0.08),_transparent_60%)] pointer-events-none blur-3xl" />
+      </div>
 
-      {/* Background orbs */}
-      <Orb className="top-[-10%] left-[-15%] w-[700px] h-[700px] opacity-[0.07]" />
-      <Orb className="bottom-[20%] right-[-10%] w-[500px] h-[500px] opacity-[0.05]" />
+      {/* ── HERO: ENGINEERING SHOWCASE ── */}
+      <section className="relative z-10 pt-32 pb-24 px-6 md:px-12 lg:px-20 border-b border-white/[0.04]">
+        
+        {/* ── IMPACTFUL NODE NETWORK BACKGROUND ── */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
+          {/* Vignette mask to blend edges */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#050816_100%)] z-20" />
+          
+          {/* Central Data Core Topology */}
+          <div className="absolute top-[40%] md:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70">
+            {/* Outer system rings */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] rounded-full border border-white/[0.04] border-l-amber-500/30 animate-[spin_30s_linear_infinite]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full border border-dashed border-white/[0.02] border-r-violet-500/30 animate-[spin_40s_linear_infinite_reverse]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1200px] md:h-[1200px] rounded-full border border-white/[0.02] animate-[spin_60s_linear_infinite]" />
+            
+            {/* Blueprint Grid Lines (Axes) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[150vh] w-[1px] bg-gradient-to-b from-transparent via-white/[0.08] to-transparent" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent rotate-45" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -rotate-45" />
 
-      {/* ── HERO ── */}
-      <section className="relative z-10 px-6 md:px-20 pt-8">
-        <div className="max-w-7xl mx-auto">
-          <GridPattern />
+            {/* Orbiting Data Nodes */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] animate-[spin_30s_linear_infinite]">
+               <div className="absolute top-0 left-1/2 w-2.5 h-2.5 md:w-3 md:h-3 bg-amber-500 rounded-full shadow-[0_0_15px_#f59e0b] -translate-x-1/2 -translate-y-1/2" />
+               <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-white/60 rounded-full -translate-x-1/2 translate-y-1/2" />
+            </div>
+            
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] animate-[spin_40s_linear_infinite_reverse]">
+               <div className="absolute left-0 top-1/2 w-2 h-2 md:w-3 md:h-3 bg-violet-500 rounded-full shadow-[0_0_15px_#8b5cf6] -translate-x-1/2 -translate-y-1/2" />
+               <div className="absolute right-1/4 bottom-1/4 w-1.5 h-1.5 bg-amber-500/80 rounded-full shadow-[0_0_8px_#f59e0b]" />
+            </div>
+            
+            {/* Core Radar Pulse */}
+            <div className="absolute top-1/2 left-1/2 w-24 h-24 md:w-40 md:h-40 bg-sky-500/10 rounded-full blur-[30px] animate-pulse -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          
+          {/* Subtle Glowing Atmosphere */}
+          <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_rgba(139,92,246,0.06),_transparent_60%)] blur-[100px] z-10" />
+          <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_rgba(245,158,11,0.04),_transparent_60%)] blur-[100px] z-10" />
+        </div>
 
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-12 mb-20">
+        <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
+              R&D Showcase
+            </span>
+          </div>
 
-            {/* Left: Copy */}
-            <div className="flex-1 text-center md:text-left order-2 md:order-1 relative z-10">
-              {/* Label */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/[0.08] border border-sky-500/20 text-sky-400 text-[9px] font-black tracking-[0.35em] uppercase mb-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
-                Engineering Hub
-              </div>
+          <h1 
+            className="mt-2 mb-6 text-[clamp(48px,7vw,100px)] font-light tracking-tight leading-[0.95] text-white uppercase"
+            style={{ fontFamily: '"Space Grotesk", "Clash Display", sans-serif' }}
+          >
+            INNOVACIÓN<br />
+            <span className="text-white/30">Y PROYECTOS.</span>
+          </h1>
 
-              <h1 className="font-black tracking-tighter leading-[0.85] mb-6">
-                <span className="block text-5xl md:text-7xl text-white">PROYECTOS</span>
-                <span className="block text-5xl md:text-7xl text-sky-500">_LAB</span>
-              </h1>
+          <p 
+            className="max-w-2xl text-[15px] md:text-[16px] text-white/50 leading-relaxed mb-10"
+            style={{ fontFamily: '"Inter", "Satoshi", sans-serif' }}
+          >
+            Despliegues técnicos y soluciones arquitectónicas desarrolladas por el IEEE Computer Society UNI. Una galería de innovación y capacidad de ingeniería.
+          </p>
 
-              <p className="text-gray-500 max-w-sm font-medium uppercase text-[10px] tracking-[0.2em] leading-loose mb-10">
-                Soluciones tecnológicas desarrolladas por{' '}
-                <span className="text-gray-300">IEEE Computer Society UNI</span>.
-              </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 border border-white/[0.04] bg-[#ffffff02] px-8 py-4 backdrop-blur-sm">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl font-light" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{projects.length}</span>
+              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Proyectos Activos</span>
+            </div>
+            <div className="w-px h-8 bg-white/[0.08]" />
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl font-light" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{allTags.length - 1}</span>
+              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Technologies</span>
+            </div>
+            <div className="w-px h-8 bg-white/[0.08]" />
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl font-light flex items-center gap-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> ONLINE
+              </span>
+              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Acceso Global</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              {/* Stats row */}
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <StatPill label="Proyectos" value={projects.length} />
-                <StatPill label="Tecnologías" value={allTags.length - 1} />
-                <StatPill label="Miembros" value="20+" />
-              </div>
+      {/* ── FEATURED PROJECT (FLAGSHIP SYSTEM) ── */}
+      {featuredProject && filter === 'all' && (
+        <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-b border-white/[0.04]">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-3 mb-12">
+              <div className="w-6 h-px bg-amber-500/50" />
+              <span className="font-mono text-[10px] tracking-[0.2em] text-amber-500/70 uppercase">
+                Proyecto Destacado
+              </span>
             </div>
 
-            {/* Right: Mascot */}
-            <div className="relative flex items-center justify-center w-60 h-60 md:w-[900px] md:h-[380px] order-1 md:order-2 flex-shrink-0">
-              {/* Ring decorations */}
-              <div className="absolute inset-0 rounded-full border border-sky-500/[0.12] animate-spin" style={{ animationDuration: '20s' }} />
-              <div className="absolute inset-4 rounded-full border border-sky-500/[0.07] animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }} />
+            <div 
+              className="group relative cursor-pointer grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] border border-white/[0.04] bg-[#030408] hover:border-white/[0.15] transition-all duration-500"
+              onClick={() => setSelectedProject(featuredProject)}
+            >
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/50 transition-all duration-700 z-20 pointer-events-none" />
 
-              {/* Sparks */}
-              {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="spark bg-sky-400 absolute rounded-full shadow-[0_0_8px_#38bdf8]"
-                  style={{
-                    width: '3px', height: '3px',
-                    left: `${15 + Math.random() * 70}%`,
-                    bottom: `${20 + Math.random() * 40}%`,
-                    animationDelay: `${(i * 0.35).toFixed(2)}s`,
-                  }}
+              <div className="relative h-64 lg:h-[450px] border-b lg:border-b-0 lg:border-r border-white/[0.04] overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.05] z-10 pointer-events-none" />
+                <img
+                  src={featuredProject.image || (featuredProject.images && featuredProject.images.length > 0 ? featuredProject.images[0] : 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')}
+                  alt={featuredProject.title}
+                  className="w-full h-full object-cover transition-all duration-1000 ease-out grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
                 />
-              ))}
-
-              <img
-                src={MascotaImg}
-                alt="Mascota IEEE CS"
-                className="relative z-10 w-[75%] h-auto object-contain drop-shadow-[0_0_40px_rgba(14,165,233,0.35)] animate-ultra-fire"
-              />
-              <div className="absolute inset-0 bg-sky-500/[0.08] blur-[80px] rounded-full -z-10 animate-pulse" />
-            </div>
-          </div>
-
-          {/* ── FILTER BAR ── */}
-          <div className="flex flex-wrap gap-2 mb-10">
-            {allTags.map(tag => (
-              <button
-                key={tag}
-                onClick={() => setFilter(tag)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200 border ${
-                  filter === tag
-                    ? 'bg-sky-600 border-sky-500/60 text-white shadow-lg shadow-sky-900/30'
-                    : 'bg-white/[0.03] border-white/[0.08] text-gray-400 hover:bg-white/[0.07] hover:text-gray-200 hover:border-white/[0.15]'
-                }`}
-              >
-                {tag === 'all' ? 'Todos' : tag}
-              </button>
-            ))}
-          </div>
-
-          {/* ── PROJECT GRID ── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((project, i) => (
-              <div
-                key={project.id ?? i}
-                onClick={() => setSelectedProject(project)}
-                className="group relative cursor-pointer rounded-2xl border border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.05] hover:border-sky-500/30 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
-              >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    style={{ filter: 'brightness(0.7) saturate(0.75)' }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/40 to-transparent" />
-
-                  {/* Index */}
-                  <span className="absolute top-4 left-4 text-[10px] font-black tracking-[0.2em] text-white/30 tabular-nums">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Arrow icon on hover */}
-                  <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-sky-500/0 group-hover:bg-sky-500 flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 -translate-y-1 group-hover:translate-y-0">
-                    <ArrowUpRight className="w-4 h-4 text-white" />
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/20 to-transparent z-10 pointer-events-none" />
+                <div className="absolute bottom-6 left-6 z-20 flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-amber-500" />
+                  <span className="font-mono text-[9px] tracking-[0.2em] text-white/50 uppercase">R&D Flagship</span>
                 </div>
+              </div>
 
-                {/* Body */}
-                <div className="p-6">
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {project.tags?.slice(0, 3).map(t => (
-                      <span key={t} className="px-2.5 py-0.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[8px] font-black uppercase tracking-widest">
+              <div className="p-8 lg:p-12 flex flex-col justify-between bg-[#ffffff01]">
+                <div>
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className="px-2 py-0.5 border border-white/[0.06] bg-white/[0.02] text-[9px] font-mono uppercase tracking-widest text-white/50">
+                      {featuredProject.category || 'Proyecto Principal'}
+                    </span>
+                  </div>
+                  <h2 
+                    className="text-3xl md:text-5xl font-light text-white mb-6 tracking-tight leading-tight group-hover:text-amber-500/90 transition-colors duration-300"
+                    style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+                  >
+                    {featuredProject.title}
+                  </h2>
+                  <p 
+                    className="text-[14px] text-white/50 leading-relaxed mb-8 line-clamp-4"
+                    style={{ fontFamily: '"Inter", sans-serif' }}
+                  >
+                    {featuredProject.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-8">
+                    {featuredProject.tags?.map(t => (
+                      <span key={t} className="font-mono text-[9px] tracking-[0.15em] text-white/30 uppercase border border-white/[0.04] px-2 py-0.5 bg-white/[0.01]">
                         {t}
                       </span>
                     ))}
                   </div>
-
-                  <h3 className="text-lg font-black uppercase leading-tight text-white mb-2 group-hover:text-sky-100 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">
-                    {project.description}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between mt-5 pt-4 border-t border-white/[0.06]">
-                    <div className="flex -space-x-1.5">
-                      {project.members?.slice(0, 4).map((m, mi) => (
-                        <div
-                          key={mi}
-                          className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-600 to-blue-800 border-2 border-[#020617] flex items-center justify-center text-[7px] font-black text-white"
-                          title={m}
-                        >
-                          {m.charAt(0)}
-                        </div>
-                      ))}
-                      {(project.members?.length ?? 0) > 4 && (
-                        <div className="w-6 h-6 rounded-full bg-white/10 border-2 border-[#020617] flex items-center justify-center text-[7px] font-bold text-gray-400">
-                          +{project.members.length - 4}
-                        </div>
-                      )}
-                    </div>
-
-                    <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-sky-500/70 group-hover:text-sky-400 transition-colors">
-                      Ver más <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                    </span>
-                  </div>
                 </div>
 
-                {/* Bottom accent line */}
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-sky-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="pt-6 border-t border-white/[0.04] flex items-center justify-between mt-auto">
+                  <span className="font-mono text-[10px] tracking-[0.15em] text-white/40 uppercase group-hover:text-white transition-colors">
+                    Ver Proyecto
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </div>
               </div>
-            ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── PROJECT GRID ── */}
+      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20">
+        <div className="max-w-7xl mx-auto">
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 pb-12 border-b border-white/[0.04]">
+            <div>
+               <div className="flex items-center gap-3 mb-4">
+                 <div className="w-6 h-px bg-white/20" />
+                 <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">Desarrollos Activos</span>
+               </div>
+               <h2 
+                 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05] text-white/90"
+                 style={{ fontFamily: '"Space Grotesk", sans-serif' }}
+               >
+                 Proyectos<br /><span className="text-white/30">Recientes.</span>
+               </h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {allTags.map(tag => (
+                <FilterChip key={tag} label={tag} isActive={filter === tag} onClick={() => setFilter(tag)} />
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {filtered.map((project, i) => {
+              // Si estamos en "Todos", saltamos el featured project en la grilla para no duplicarlo
+              if (filter === 'all' && project.id === featuredProject?.id) return null
+              return (
+                <ProjectCard 
+                  key={project.id ?? i} 
+                  project={project} 
+                  index={filter === 'all' ? i - 1 : i} 
+                  onClick={() => setSelectedProject(project)} 
+                />
+              )
+            })}
           </div>
 
           {/* Empty state */}
           {filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-32 text-center">
-              <Layers className="w-10 h-10 text-white/10 mb-4" />
-              <p className="text-gray-600 text-sm font-bold uppercase tracking-widest">Sin proyectos para este filtro</p>
+            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-white/[0.08] bg-[#ffffff01]">
+              <GitPullRequest className="w-6 h-6 text-white/20 mb-4" />
+              <p className="text-white/40 text-[11px] font-mono uppercase tracking-widest">No se encontraron proyectos.</p>
             </div>
           )}
         </div>
