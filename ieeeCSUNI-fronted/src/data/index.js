@@ -1,3 +1,6 @@
+import ieeeWeb from '../../public/projects/ieee-web/p1.png'
+import codenix from '../../public/projects/codenix/p1.png'
+
 // ── Events ────────────────────────────────────────────────
 export const events = [
   {
@@ -142,23 +145,28 @@ export const footerLinks = {
 // ── Chapter projects ────────────────────────────────────────── 
 export const projects = [
   {
-    id: 1,
-    title: "IEEE CS Portal",
-    description: "Plataforma oficial para la gestión de recursos y miembros del capítulo utilizando React y Tailwind.",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-    tags: ["React", "Tailwind", "Vite"],
-    github: "https://github.com/ieeecsuni",
-    link: "https://ieeecsuni.org",
-    members: ["César", "Bayron", "Integrantes CS"]
+    id: 'ieee-web',
+    title: 'IEEE CS UNI Web',
+    category: 'Web Dev',
+    description:
+      'Plataforma web oficial del capítulo estudiantil IEEE Computer Society UNI. Sistema de roles (user / member / admin), gestión de eventos, proyectos y membresías.',
+    tags: ['React', 'Vite', 'Tailwind', 'Laravel'],
+    github: 'https://github.com/ieeecsuni-droid/ieeecsuni.github.io',
+    link: 'https://ieeecsuni-droid.github.io/ieeecsuni.github.io/',
+    image: ieeeWeb,
+    members: ['Cesar Adrian Guevara Salcedo'],
   },
+
   {
-    id: 2,
-    title: "Cyber Mascota",
-    description: "Desarrollo de animaciones interactivas y efectos de partículas para la identidad visual del capítulo.",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
-    tags: ["CSS", "SVG", "Animation"],
-    github: "https://github.com/ieeecsuni",
-    link: "#",
-    members: ["César"]
-  }
+    id: 'codenix',
+    title: 'Codenix',
+    category: 'Web Dev',
+    description:
+      'Plataforma de práctica, competición y comunidad para estudiantes de la UNI. Jueces automáticos, rankings en tiempo real y editorial colaborativo.',
+    tags: ['React', 'Laravel', 'Docker'],
+    github: 'https://github.com/ieeecs-uni/codenix',
+    link: 'https://codenix.ieeecs-uni.com',
+    image: codenix,
+    members: ['Cesar Adrian Guevara Salcedo'],
+  },
 ];
