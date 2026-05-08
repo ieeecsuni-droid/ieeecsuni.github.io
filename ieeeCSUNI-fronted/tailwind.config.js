@@ -4,8 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        outfit: ['Outfit', 'sans-serif'],
-        clash: ['"Clash Display"', 'sans-serif'],
+        'space-grotesk': ['"Space Grotesk"', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'ibm-plex': ['"IBM Plex Sans"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {

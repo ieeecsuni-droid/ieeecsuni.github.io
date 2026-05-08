@@ -3,299 +3,149 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────
-   BASE
+   BASE & GLOBAL RESET
+   Configuración fundamental para el ecosistema.
 ───────────────────────────────────────────── */
 html, body {
   margin: 0;
   padding: 0;
-  background-color: #050816;
+  background-color: #02040A; /* Deep Black Base */
   color: #ffffff;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 /* ─────────────────────────────────────────────
-   GLOBAL BACKGROUND ARCHITECTURE
+   GLOBAL BACKGROUND ARCHITECTURE (Systems Observatory)
+   Arquitectura de capas para profundidad cinematográfica.
 ───────────────────────────────────────────── */
 #root::before {
   content: "";
   position: fixed;
   inset: 0;
+  /* Capa 1: Iluminación Ambiental (Volumetric Glows) */
   background: 
-    radial-gradient(circle at 20% 30%, rgba(14, 165, 233, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
-  z-index: -1;
+    radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(7, 16, 29, 0.4) 0%, transparent 100%);
+  z-index: -2;
   pointer-events: none;
-  animation: meshFlow 20s ease-in-out infinite alternate;
 }
 
 #root::after {
   content: "";
   position: fixed;
   inset: 0;
+  /* Capa 2: Grid Técnico Ultra Sutil (Engineering Blueprint) */
   background-image: 
-    url("https://grainy-gradients.vercel.app/noise.svg"),
-    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: auto, 40px 40px;
-  opacity: 0.04;
-  mix-blend-mode: overlay;
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: center center;
+  mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+  opacity: 0.2;
   z-index: -1;
   pointer-events: none;
 }
 
-@keyframes meshFlow {
-  0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.1) translate(2%, 2%); }
-}
-
-@keyframes gridPan {
-  from { background-position: 0 0; }
-  to { background-position: 64px 64px; }
-}
-
 /* ─────────────────────────────────────────────
-   FONDO AMBIENTAL — Noise + Grid
+   REFINED CINEMATIC NOISE
+   Textura de grano fino para profundidad y realismo.
 ───────────────────────────────────────────── */
-body::before {
-  content: '';
+body::after {
+  content: "";
   position: fixed;
   inset: 0;
-  background-image: url('/noise.png');
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.04; /* Adjusted for the richer cyber-texture */
+  background-image: url("/cyber-texture.png");
   background-repeat: repeat;
-  opacity: 0.035;
-  pointer-events: none;
-  z-index: 0;
-}
-
-html::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-  background-size: 64px 64px;
-  pointer-events: none;
-  z-index: 0;
+  mix-blend-mode: overlay;
 }
 
 /* ─────────────────────────────────────────────
-   SCROLLBAR
+   SCROLLBAR (High Fidelity)
 ───────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.4); }
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #02040A;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.3);
+}
 
 /* ─────────────────────────────────────────────
-   SELECTION
+   GLOBAL SELECTION
 ───────────────────────────────────────────── */
-::selection { background: rgba(59, 130, 246, 0.25); color: white; }
+::selection {
+  background: rgba(14, 165, 233, 0.2);
+  color: #ffffff;
+}
 
 /* ─────────────────────────────────────────────
-   SECTION UTILITY
-───────────────────────────────────────────── */
-.section { position: relative; z-index: 1; }
-
-/* ─────────────────────────────────────────────
-   SCROLL REVEAL
+   SCROLL REVEAL UTILITIES
 ───────────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  will-change: opacity, transform;
+  transform: translateY(30px);
+  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
+
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-
-/* ─────────────────────────────────────────────
-   ANIMATIONS
-───────────────────────────────────────────── */
-@keyframes gridPan {
-  0%   { transform: translateY(0); }
-  100% { transform: translateY(64px); }
-}
-
-@keyframes pulseSlow {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50%       { opacity: 0.45; transform: scale(1.04); }
-}
-
-@keyframes statusPulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-
-@keyframes telemetry {
-  0%, 100% { transform: scaleY(0.4); opacity: 0.3; }
-  50%       { transform: scaleY(1); opacity: 0.8; }
-}
-
-@keyframes scanline {
-  0%   { transform: translateY(-100%); opacity: 0; }
-  10%  { opacity: 0.03; }
-  90%  { opacity: 0.03; }
-  100% { transform: translateY(100vh); opacity: 0; }
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-@keyframes marqueeVertical {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
-}
-
-/* ─────────────────────────────────────────────
-   ANIMATED GRID BACKGROUND
-───────────────────────────────────────────── */
-.bg-grid-animated {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-  background-size: 64px 64px;
-  animation: gridPan 25s linear infinite;
 }
 
 /* ─────────────────────────────────────────────
    SYSTEMS OBSERVATORY UTILITIES
 ───────────────────────────────────────────── */
-.technical-label {
-  font-family: 'JetBrains Mono', monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 11px;
+.bg-grid-animated {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: gridFlow 60s linear infinite;
 }
 
-.architectural-divider {
-  position: relative;
-}
-.architectural-divider::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 1px;
-  width: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+@keyframes gridFlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 64px 64px; }
 }
 
-.systems-grid {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+@keyframes scanlineDown {
+  0% { transform: translateY(-100%); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
 }
 
-.mesh-bg {
-  background: 
-    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.04) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.02) 0px, transparent 50%);
+@keyframes scanlineUp {
+  0% { transform: translateY(100vh); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(-100%); opacity: 0; }
 }
 
-.telemetry-glow {
-  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.25));
+.text-glow-blue {
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
 }
 
 /* ─────────────────────────────────────────────
-   SCANLINE ATMOSPHERIC EFFECT
+   TYPOGRAPHY TOKENS
 ───────────────────────────────────────────── */
-.scanline-effect::after {
-  content: '';
-  position: absolute;
-  inset-inline: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.03), transparent);
-  animation: scanline 15s linear infinite;
-  pointer-events: none;
-}
-
-/* ─────────────────────────────────────────────
-   FOOTER UTILITIES
-───────────────────────────────────────────── */
-.footer-gradient-line {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(59, 130, 246, 0.1) 40%,
-    rgba(139, 92, 246, 0.08) 70%,
-    transparent 100%
-  );
-}
-
-/* ─────────────────────────────────────────────
-   MASCOT — Institutional Treatment
-───────────────────────────────────────────── */
-.mascot-hero {
-  filter: grayscale(1) brightness(0.7);
-  opacity: 0.08;
-  mix-blend-mode: screen;
-  pointer-events: none;
-  user-select: none;
-  transition: opacity 1s ease-in-out;
-}
-
-.mascot-hero-holographic {
-  filter: grayscale(1) contrast(1.1) brightness(0.8);
-  opacity: 0.06;
-  mix-blend-mode: color-dodge;
-  mask-image: linear-gradient(to bottom, black 40%, transparent);
-  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent);
-}
-
-.mascot-culture {
-  filter: grayscale(0.6);
-  opacity: 0.7;
-  transition: filter 0.8s ease, opacity 0.8s ease;
-}
-.mascot-culture:hover {
-  filter: grayscale(0.15);
-  opacity: 1;
-}
-
-/* ─────────────────────────────────────────────
-   FIELD / FORM UTILITIES
-───────────────────────────────────────────── */
-.field-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-  color: rgba(255,255,255,0.4);
-}
-
-.field-input {
-  width: 100%;
-  border-radius: 2px;
-  padding: 12px 16px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background: rgba(255,255,255,0.01);
-  border: 1px solid rgba(255,255,255,0.05);
-  color: white;
-  font-family: 'Inter', sans-serif;
-}
-.field-input::placeholder { color: rgba(255,255,255,0.15); }
-.field-input:focus {
-  border-color: rgba(59, 130, 246, 0.25);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.03);
-}
-
-/* ─────────────────────────────────────────────
-   MARQUEE
-───────────────────────────────────────────── */
-.animate-marquee { animation: marquee linear infinite; }
-.animate-marquee.vertical { animation: marqueeVertical linear infinite; }
+.font-space-grotesk { font-family: 'Space Grotesk', sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+.font-ibm-plex { font-family: 'IBM Plex Sans', sans-serif; }

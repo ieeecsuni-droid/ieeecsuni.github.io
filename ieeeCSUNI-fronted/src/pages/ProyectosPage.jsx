@@ -1,7 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import { projects } from '../data/data'
+import { motion } from 'framer-motion'
+import { projects } from '../data'
 import ProjectCard from '../components/ui/ProjectCard'
-import { Github, ExternalLink, X, Layers, Activity, GitCommit, GitPullRequest } from 'lucide-react'
+import { EngineeringButton } from '../components/ui/EngineeringButton'
+import { AtmosphereTag } from '../components/ui/AtmosphereTag'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import { Github, ExternalLink, X, Layers, Activity, GitCommit, GitPullRequest, Crosshair, Cpu, Terminal } from 'lucide-react'
 
 // ─── Modal ───────────────────────────────────────────────────
 
@@ -21,135 +25,91 @@ const ProjectModal = ({ project, onClose }) => {
   const displayImage = project.image || (project.images && project.images.length > 0 ? project.images[0] : 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12">
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-[#050816]/95 backdrop-blur-md"
+        className="absolute inset-0 bg-black/95 backdrop-blur-xl"
         onClick={onClose}
-        style={{ animation: 'fadeIn 200ms ease forwards' }}
+        style={{ animation: 'fadeIn 300ms ease forwards' }}
       />
 
-      {/* Modal Box */}
       <div
-        className="relative w-full max-w-5xl flex flex-col md:flex-row bg-[#050816] border border-white/[0.1] shadow-2xl overflow-hidden"
-        style={{ animation: 'modalIn 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+        className="relative w-full max-w-6xl flex flex-col md:flex-row bg-black border border-white/10 overflow-hidden"
+        style={{ animation: 'modalIn 500ms cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-50 p-2 text-white/50 hover:text-white bg-black/50 backdrop-blur-sm border border-white/[0.08] transition-all duration-200"
+          className="absolute top-6 right-6 z-50 w-12 h-12 flex items-center justify-center text-white/40 hover:text-white border border-white/10 hover:border-blue-500/40 bg-black/50 backdrop-blur-md transition-all duration-300"
         >
-          <X className="w-4 h-4" />
+          <X size={20} />
         </button>
 
-        {/* Left: Image / Visuals */}
-        <div className="md:w-[50%] relative min-h-[300px] md:min-h-0 border-b md:border-b-0 md:border-r border-white/[0.06] bg-[#030408]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.05] pointer-events-none z-10" />
-          
-          <img
-            src={displayImage}
-            className="absolute inset-0 w-full h-full object-cover grayscale opacity-70"
-            alt={project.title}
-          />
-          <div className="absolute inset-0 bg-[#050816]/40 pointer-events-none mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-transparent pointer-events-none" />
-
-          {/* Telemetry overlay */}
-          <div className="absolute bottom-6 left-6 z-20 flex flex-col gap-1 font-mono text-[9px] tracking-[0.2em] text-white/40 uppercase">
-            <span>PROJECT_ID: {project.id || 'N/A'}</span>
-            <span>STATUS: DEPLOYED</span>
-            <span>ACCESO: PÚBLICO</span>
+        <div className="md:w-1/2 relative min-h-[400px] border-b md:border-b-0 md:border-r border-white/10 bg-black">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:32px_32px] opacity-10 z-10 pointer-events-none" />
+          <img src={displayImage} className="absolute inset-0 w-full h-full object-cover grayscale opacity-50" alt={project.title} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
+          <div className="absolute bottom-8 left-8 z-20 flex flex-col gap-1">
+            <span className="font-ibm-plex text-[10px] tracking-[0.4em] text-blue-500 font-bold uppercase">PROJECT_TELEMETRY</span>
+            <span className="font-mono text-[9px] text-white/30 tracking-widest uppercase">ID: {project.id || 'SYS_0x99'} // STATUS: ONLINE</span>
           </div>
         </div>
 
-        {/* Right: Technical Specs */}
-        <div className="md:w-[50%] p-8 md:p-12 flex flex-col bg-[#ffffff02]">
+        <div className="md:w-1/2 p-10 md:p-16 flex flex-col bg-white/[0.01]">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-6">
-              <Layers className="w-3.5 h-3.5 text-white/40" />
-              <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50">
-                {project.category ?? 'DESARROLLO TECNOLÓGICO'}
+            <div className="flex items-center gap-4 mb-8">
+              <Layers size={14} className="text-blue-500/40" />
+              <span className="font-ibm-plex text-[10px] tracking-[0.3em] uppercase text-white/30 font-bold">
+                {project.category ?? 'Ingeniería y Desarrollo'}
               </span>
             </div>
 
-            <h2 
-              className="text-3xl md:text-4xl font-light text-white mb-6 tracking-tight leading-tight"
-              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-            >
+            <h2 className="text-4xl md:text-5xl font-space-grotesk font-bold text-white mb-8 tracking-tighter leading-tight">
               {project.title}
             </h2>
 
-            <div className="w-8 h-px bg-white/20 mb-6" />
+            <div className="w-12 h-px bg-blue-500/30 mb-8" />
 
-            <p 
-              className="text-white/50 text-[14px] leading-relaxed mb-8"
-              style={{ fontFamily: '"Inter", sans-serif' }}
-            >
+            <p className="text-white/40 text-lg leading-relaxed mb-12 font-inter">
               {project.description}
             </p>
 
-            {/* Tech Stack */}
-            <div className="mb-8">
-              <h4 className="font-mono text-[9px] text-white/30 tracking-[0.2em] uppercase mb-3">Tecnologías Usadas</h4>
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-12">
+              <h4 className="font-ibm-plex text-[10px] text-blue-500 tracking-[0.3em] uppercase mb-6 font-bold">Core Stack</h4>
+              <div className="flex flex-wrap gap-3">
                 {project.tags?.map(t => (
-                  <span
-                    key={t}
-                    className="px-2.5 py-1 border border-white/[0.06] bg-white/[0.02] text-[10px] font-mono uppercase tracking-widest text-white/60"
-                  >
+                  <span key={t} className="px-4 py-1.5 border border-white/5 bg-white/[0.02] text-[10px] font-ibm-plex uppercase tracking-widest text-white/60 font-bold">
                     {t}
                   </span>
                 ))}
               </div>
             </div>
 
-            {/* Members / Contributors */}
             {project.members?.length > 0 && (
-              <div className="mb-10">
-                <h4 className="font-mono text-[9px] text-white/30 tracking-[0.2em] uppercase mb-3">Contribuidores</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className="mb-12">
+                <h4 className="font-ibm-plex text-[10px] text-blue-500 tracking-[0.3em] uppercase mb-6 font-bold">Contributors</h4>
+                <div className="flex flex-wrap gap-3">
                   {project.members.map(member => (
-                    <div
-                      key={member}
-                      className="px-3 py-1.5 text-[11px] text-white/60 border border-white/[0.04] bg-white/[0.01]"
-                    >
+                    <span key={member} className="px-4 py-1.5 text-[11px] text-white/40 border border-white/5 bg-white/[0.01] font-inter">
                       {member}
-                    </div>
+                    </span>
                   ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Action Links */}
-          <div className="flex gap-4 mt-auto pt-6 border-t border-white/[0.04]">
+          <div className="flex flex-col sm:flex-row gap-6 pt-10 border-t border-white/5">
             {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/[0.1] bg-white/[0.02] hover:bg-white text-[10px] font-mono tracking-widest uppercase text-white/70 hover:text-[#050816] hover:border-white transition-all duration-300"
-              >
-                <Github className="w-4 h-4" />
-                Source Code
+              <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 group/btn relative inline-flex items-center justify-center gap-4 px-8 py-4 border border-white/10 hover:border-blue-500/40 hover:bg-white/[0.02] transition-all duration-700">
+                <Github size={16} className="text-white/20 group-hover/btn:text-white transition-colors" />
+                <span className="font-space-grotesk font-bold text-[10px] uppercase tracking-[0.2em] text-white/40 group-hover/btn:text-white">SOURCE_CODE</span>
               </a>
             )}
             {project.link && (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/20 bg-white/10 hover:bg-white hover:text-[#050816] text-[10px] font-mono tracking-widest uppercase text-white transition-all duration-300"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Live Demo
+              <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex-1 group/btn relative inline-flex items-center justify-center gap-4 px-8 py-4 border border-blue-500/30 bg-blue-600/10 hover:bg-blue-600/20 hover:border-blue-500 transition-all duration-700">
+                <ExternalLink size={16} className="text-white group-hover/btn:scale-110 transition-transform" />
+                <span className="font-space-grotesk font-bold text-[10px] uppercase tracking-[0.2em] text-white">LIVE_DEPLOYMENT</span>
               </a>
-            )}
-            {!project.link && !project.github && (
-              <span className="flex-1 flex items-center justify-center gap-2 py-3 border border-white/[0.04] bg-white/[0.01] text-[10px] font-mono tracking-widest uppercase text-white/20">
-                Código Privado
-              </span>
             )}
           </div>
         </div>
@@ -158,7 +118,7 @@ const ProjectModal = ({ project, onClose }) => {
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes modalIn {
-          from { opacity: 0; transform: scale(0.98) translateY(10px) }
+          from { opacity: 0; transform: scale(0.98) translateY(20px) }
           to   { opacity: 1; transform: scale(1) translateY(0) }
         }
       `}</style>
@@ -172,10 +132,10 @@ function FilterChip({ label, isActive, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 border text-[10px] font-mono tracking-[0.15em] uppercase transition-all duration-300
+      className={`px-6 py-2.5 border text-[10px] font-space-grotesk font-bold tracking-[0.2em] uppercase transition-all duration-500
         ${isActive
-          ? 'bg-white text-[#050816] border-white'
-          : 'bg-transparent text-white/40 border-white/[0.08] hover:text-white/80 hover:border-white/[0.2]'
+          ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.3)]'
+          : 'bg-white/[0.02] text-white/30 border-white/5 hover:text-white/80 hover:border-white/20'
         }`}
     >
       {label === 'all' ? 'TODOS' : label}
@@ -186,184 +146,104 @@ function FilterChip({ label, isActive, onClick }) {
 // ─── Main Page ─────────────────────────────────────────────────
 
 export default function ProyectosPage() {
+  useScrollReveal()
   const [selectedProject, setSelectedProject] = useState(null)
   const [filter, setFilter] = useState('all')
 
   const allTags = ['all', ...new Set(projects.flatMap(p => p.tags ?? []))]
   const filtered = filter === 'all' ? projects : projects.filter(p => p.tags?.includes(filter))
 
-  const featuredProject = projects[0] // Treat the first project as the flagship
+  const featuredProject = projects[0]
 
   return (
-    <main className="bg-[#050816] min-h-screen text-white selection:bg-amber-500/30 selection:text-white overflow-x-hidden">
+    <main className="bg-black text-white min-h-screen selection:bg-blue-600/30 overflow-hidden font-inter">
       
-      {/* ══ BACKGROUND SYSTEM ══════════════════════════════════ */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px',
-            maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)'
-          }}
-        />
-        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_rgba(76,29,149,0.08),_transparent_60%)] pointer-events-none blur-3xl" />
-      </div>
-
-      {/* ── HERO: ENGINEERING SHOWCASE ── */}
-      <section className="relative z-10 pt-32 pb-24 px-6 md:px-12 lg:px-20 border-b border-white/[0.04]">
-        
-        {/* ── IMPACTFUL NODE NETWORK BACKGROUND ── */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
-          {/* Vignette mask to blend edges */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_#050816_100%)] z-20" />
-          
-          {/* Central Data Core Topology */}
-          <div className="absolute top-[40%] md:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-70">
-            {/* Outer system rings */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] rounded-full border border-white/[0.04] border-l-amber-500/30 animate-[spin_30s_linear_infinite]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] rounded-full border border-dashed border-white/[0.02] border-r-violet-500/30 animate-[spin_40s_linear_infinite_reverse]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] md:w-[1200px] md:h-[1200px] rounded-full border border-white/[0.02] animate-[spin_60s_linear_infinite]" />
-            
-            {/* Blueprint Grid Lines (Axes) */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[150vh] w-[1px] bg-gradient-to-b from-transparent via-white/[0.08] to-transparent" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent rotate-45" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -rotate-45" />
-
-            {/* Orbiting Data Nodes */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] animate-[spin_30s_linear_infinite]">
-               <div className="absolute top-0 left-1/2 w-2.5 h-2.5 md:w-3 md:h-3 bg-amber-500 rounded-full shadow-[0_0_15px_#f59e0b] -translate-x-1/2 -translate-y-1/2" />
-               <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-white/60 rounded-full -translate-x-1/2 translate-y-1/2" />
-            </div>
-            
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] md:w-[850px] md:h-[850px] animate-[spin_40s_linear_infinite_reverse]">
-               <div className="absolute left-0 top-1/2 w-2 h-2 md:w-3 md:h-3 bg-violet-500 rounded-full shadow-[0_0_15px_#8b5cf6] -translate-x-1/2 -translate-y-1/2" />
-               <div className="absolute right-1/4 bottom-1/4 w-1.5 h-1.5 bg-amber-500/80 rounded-full shadow-[0_0_8px_#f59e0b]" />
-            </div>
-            
-            {/* Core Radar Pulse */}
-            <div className="absolute top-1/2 left-1/2 w-24 h-24 md:w-40 md:h-40 bg-sky-500/10 rounded-full blur-[30px] animate-pulse -translate-x-1/2 -translate-y-1/2" />
+      {/* ══ HERO ══════════════════════════════════════════════ */}
+      <section className="relative pt-48 pb-32 px-6 md:px-24 border-b border-white/5 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[#02040a]" />
+          <div className="absolute inset-0 opacity-40">
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-blue-500/[0.03] animate-[spin_60s_linear_infinite]" />
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] rounded-full border border-blue-500/[0.02] animate-[spin_90s_linear_infinite_reverse]" />
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150vw] h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent" />
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-px h-[150vh] bg-gradient-to-b from-transparent via-blue-500/10 to-transparent" />
           </div>
-          
-          {/* Subtle Glowing Atmosphere */}
-          <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,_rgba(139,92,246,0.06),_transparent_60%)] blur-[100px] z-10" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_rgba(245,158,11,0.04),_transparent_60%)] blur-[100px] z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05),transparent_70%)]" />
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
-              R&D Showcase
-            </span>
-          </div>
+        <div className="relative z-10 max-w-[1700px] mx-auto w-full flex flex-col items-center text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            <AtmosphereTag className="mb-12 justify-center">Showcase de Ingeniería e I+D</AtmosphereTag>
+            <h1 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,10rem)] leading-[0.85] tracking-tight uppercase text-white mb-12">
+              Innovación<br /><span className="text-blue-600">y Proyectos.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white/40 leading-relaxed font-inter max-w-3xl mb-16">
+              Despliegues técnicos y soluciones arquitectónicas desarrolladas por el IEEE Computer Society UNI. Una galería de innovación y capacidad de ingeniería.
+            </p>
+          </motion.div>
 
-          <h1 
-            className="mt-2 mb-6 text-[clamp(48px,7vw,100px)] font-light tracking-tight leading-[0.95] text-white uppercase"
-            style={{ fontFamily: '"Space Grotesk", "Clash Display", sans-serif' }}
-          >
-            INNOVACIÓN<br />
-            <span className="text-white/30">Y PROYECTOS.</span>
-          </h1>
-
-          <p 
-            className="max-w-2xl text-[15px] md:text-[16px] text-white/50 leading-relaxed mb-10"
-            style={{ fontFamily: '"Inter", "Satoshi", sans-serif' }}
-          >
-            Despliegues técnicos y soluciones arquitectónicas desarrolladas por el IEEE Computer Society UNI. Una galería de innovación y capacidad de ingeniería.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-8 border border-white/[0.04] bg-[#ffffff02] px-8 py-4 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-2xl font-light" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{projects.length}</span>
-              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Proyectos Activos</span>
-            </div>
-            <div className="w-px h-8 bg-white/[0.08]" />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-2xl font-light" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{allTags.length - 1}</span>
-              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Technologies</span>
-            </div>
-            <div className="w-px h-8 bg-white/[0.08]" />
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-2xl font-light flex items-center gap-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> ONLINE
-              </span>
-              <span className="font-mono text-[8px] tracking-[0.2em] text-white/30 uppercase">Acceso Global</span>
-            </div>
+          <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-12 border border-white/10 bg-white/[0.01] px-12 py-8 backdrop-blur-xl">
+            {[
+              { val: projects.length, label: 'Sistemas Activos' },
+              { val: allTags.length - 1, label: 'Tecnologías' },
+              { val: '24/7', label: 'Monitorización' },
+              { val: 'GLOBAL', label: 'Impacto' },
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <span className="font-space-grotesk text-3xl font-bold text-white mb-2">{stat.val}</span>
+                <span className="font-ibm-plex text-[8px] tracking-[0.2em] text-blue-500/60 uppercase font-bold">{stat.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── FEATURED PROJECT (FLAGSHIP SYSTEM) ── */}
+      {/* ══ FEATURED ══════════════════════════════════════════ */}
       {featuredProject && filter === 'all' && (
-        <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-b border-white/[0.04]">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 mb-12">
-              <div className="w-6 h-px bg-amber-500/50" />
-              <span className="font-mono text-[10px] tracking-[0.2em] text-amber-500/70 uppercase">
-                Proyecto Destacado
-              </span>
-            </div>
-
+        <section className="py-48 px-6 md:px-24 border-b border-white/5 bg-white/[0.01]">
+          <div className="max-w-[1700px] mx-auto">
+            <AtmosphereTag className="mb-16">Flagship Project</AtmosphereTag>
+            
             <div 
-              className="group relative cursor-pointer grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] border border-white/[0.04] bg-[#030408] hover:border-white/[0.15] transition-all duration-500"
+              className="group relative cursor-pointer grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] border border-white/5 bg-black hover:border-blue-500/20 transition-all duration-700"
               onClick={() => setSelectedProject(featuredProject)}
             >
-              <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/50 transition-all duration-700 z-20 pointer-events-none" />
+              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-blue-500/40" />
+              <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-blue-500/40" />
 
-              <div className="relative h-64 lg:h-[450px] border-b lg:border-b-0 lg:border-r border-white/[0.04] overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:20px_20px] opacity-[0.05] z-10 pointer-events-none" />
-                <img
-                  src={featuredProject.image || (featuredProject.images && featuredProject.images.length > 0 ? featuredProject.images[0] : 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800')}
-                  alt={featuredProject.title}
-                  className="w-full h-full object-cover transition-all duration-1000 ease-out grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/20 to-transparent z-10 pointer-events-none" />
-                <div className="absolute bottom-6 left-6 z-20 flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-amber-500" />
-                  <span className="font-mono text-[9px] tracking-[0.2em] text-white/50 uppercase">R&D Flagship</span>
+              <div className="relative h-[400px] lg:h-[600px] border-b lg:border-b-0 lg:border-r border-white/5 overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:32px_32px] opacity-10 z-10" />
+                <img src={featuredProject.image || (featuredProject.images && featuredProject.images.length > 0 ? featuredProject.images[0] : PLACEHOLDER)} className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+                <div className="absolute bottom-8 left-8 z-20 flex items-center gap-4">
+                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                  <span className="font-ibm-plex text-[10px] tracking-[0.4em] text-white/40 uppercase font-bold">R&D_FLAGSHIP_SYSTEM</span>
                 </div>
               </div>
 
-              <div className="p-8 lg:p-12 flex flex-col justify-between bg-[#ffffff01]">
+              <div className="p-12 lg:p-20 flex flex-col justify-between bg-white/[0.01]">
                 <div>
-                  <div className="flex items-center gap-2 mb-6">
-                    <span className="px-2 py-0.5 border border-white/[0.06] bg-white/[0.02] text-[9px] font-mono uppercase tracking-widest text-white/50">
-                      {featuredProject.category || 'Proyecto Principal'}
-                    </span>
-                  </div>
-                  <h2 
-                    className="text-3xl md:text-5xl font-light text-white mb-6 tracking-tight leading-tight group-hover:text-amber-500/90 transition-colors duration-300"
-                    style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-                  >
+                  <span className="inline-block px-3 py-1 border border-blue-500/20 bg-blue-500/5 text-[9px] font-ibm-plex uppercase tracking-widest text-blue-400 font-bold mb-8">
+                    {featuredProject.category || 'Proyecto Principal'}
+                  </span>
+                  <h2 className="text-4xl lg:text-6xl font-space-grotesk font-bold text-white mb-8 tracking-tighter leading-[0.95] group-hover:text-blue-500 transition-colors duration-500">
                     {featuredProject.title}
                   </h2>
-                  <p 
-                    className="text-[14px] text-white/50 leading-relaxed mb-8 line-clamp-4"
-                    style={{ fontFamily: '"Inter", sans-serif' }}
-                  >
+                  <p className="text-lg text-white/40 leading-relaxed mb-12 font-inter line-clamp-4 group-hover:text-white/60 transition-colors">
                     {featuredProject.description}
                   </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {featuredProject.tags?.map(t => (
-                      <span key={t} className="font-mono text-[9px] tracking-[0.15em] text-white/30 uppercase border border-white/[0.04] px-2 py-0.5 bg-white/[0.01]">
+                  <div className="flex flex-wrap gap-3 mb-12">
+                    {featuredProject.tags?.slice(0, 5).map(t => (
+                      <span key={t} className="font-ibm-plex text-[9px] tracking-[0.2em] text-white/20 uppercase border border-white/5 px-3 py-1 bg-white/[0.02]">
                         {t}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-white/[0.04] flex items-center justify-between mt-auto">
-                  <span className="font-mono text-[10px] tracking-[0.15em] text-white/40 uppercase group-hover:text-white transition-colors">
-                    Ver Proyecto
-                  </span>
-                  <ExternalLink className="w-4 h-4 text-white/30 group-hover:text-white transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                <div className="pt-8 border-t border-white/5 flex items-center justify-between">
+                  <span className="font-space-grotesk font-bold text-[12px] tracking-[0.2em] text-white/30 group-hover:text-white transition-colors uppercase">Explorar Documentación</span>
+                  <Activity size={20} className="text-white/20 group-hover:text-blue-500 group-hover:scale-110 transition-all" />
                 </div>
               </div>
             </div>
@@ -371,59 +251,50 @@ export default function ProyectosPage() {
         </section>
       )}
 
-      {/* ── PROJECT GRID ── */}
-      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
+      {/* ══ GRID ══════════════════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24">
+        <div className="max-w-[1700px] mx-auto">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 pb-12 border-b border-white/[0.04]">
+          <div className="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24 border-b border-white/5 pb-16">
             <div>
-               <div className="flex items-center gap-3 mb-4">
-                 <div className="w-6 h-px bg-white/20" />
-                 <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">Desarrollos Activos</span>
-               </div>
-               <h2 
-                 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05] text-white/90"
-                 style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-               >
-                 Proyectos<br /><span className="text-white/30">Recientes.</span>
-               </h2>
+              <AtmosphereTag className="mb-10">Repositorio de Proyectos</AtmosphereTag>
+              <h2 className="font-space-grotesk font-bold text-5xl md:text-7xl text-white mb-4 tracking-tighter">
+                Proyectos<br /><span className="text-blue-600">Recientes.</span>
+              </h2>
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div className="flex flex-wrap gap-3">
               {allTags.map(tag => (
                 <FilterChip key={tag} label={tag} isActive={filter === tag} onClick={() => setFilter(tag)} />
               ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 border border-white/5">
             {filtered.map((project, i) => {
-              // Si estamos en "Todos", saltamos el featured project en la grilla para no duplicarlo
               if (filter === 'all' && project.id === featuredProject?.id) return null
               return (
-                <ProjectCard 
-                  key={project.id ?? i} 
-                  project={project} 
-                  index={filter === 'all' ? i - 1 : i} 
-                  onClick={() => setSelectedProject(project)} 
-                />
+                <ProjectCard key={project.id ?? i} project={project} index={filter === 'all' ? i : i} onClick={() => setSelectedProject(project)} />
               )
             })}
           </div>
 
-          {/* Empty state */}
           {filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-white/[0.08] bg-[#ffffff01]">
-              <GitPullRequest className="w-6 h-6 text-white/20 mb-4" />
-              <p className="text-white/40 text-[11px] font-mono uppercase tracking-widest">No se encontraron proyectos.</p>
+            <div className="py-32 flex flex-col items-center justify-center border border-dashed border-white/10 bg-white/[0.01]">
+              <Terminal size={32} className="text-white/10 mb-8" />
+              <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold">QUERY_STATUS: NULL_RESPONSE</span>
             </div>
           )}
         </div>
       </section>
 
-      {/* ── MODAL ── */}
       {selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
+
+      <style>{`
+        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg) } to { transform: translate(-50%, -50%) rotate(360deg) } }
+      `}</style>
     </main>
   )
 }

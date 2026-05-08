@@ -1,131 +1,103 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { team } from '../data'
 import { MemberCard } from '../components/ui/MemberCard'
-import { Activity, Shield, Users, Network, Terminal, Database, ArrowUpRight } from 'lucide-react'
-
-// ─── Divisor Arquitectónico ──────────────────────────────────
+import { EngineeringButton } from '../components/ui/EngineeringButton'
+import { AtmosphereTag } from '../components/ui/AtmosphereTag'
+import { useScrollReveal } from '../hooks/useScrollReveal'
+import { Activity, Shield, Users, Network, Terminal, Database, ArrowUpRight, Cpu, Crosshair } from 'lucide-react'
 
 function DivisionHeader({ title, subtitle, icon: Icon }) {
   return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pb-8 border-b border-white/[0.04]">
+    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10 mb-20 pb-12 border-b border-white/5">
       <div>
-        <div className="flex items-center gap-3 mb-4">
-          <Icon className="w-4 h-4 text-white/30" />
-          <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">System Division</span>
+        <div className="flex items-center gap-4 mb-6">
+          <Icon className="w-5 h-5 text-blue-500/40" />
+          <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-blue-500/60 uppercase font-bold">System Division</span>
         </div>
-        <h2 
-          className="text-3xl md:text-4xl font-light tracking-tight leading-[1.05] text-white/90"
-          style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-        >
+        <h2 className="text-4xl md:text-6xl font-space-grotesk font-bold tracking-tighter leading-[0.95] text-white">
           {title}
         </h2>
       </div>
-      <p className="text-white/40 text-[13px] font-mono tracking-widest uppercase border-l border-white/[0.1] pl-4 max-w-xs">
+      <p className="text-white/30 text-[12px] font-ibm-plex tracking-[0.3em] uppercase font-bold border-l border-white/10 pl-6 max-w-sm">
         {subtitle}
       </p>
     </div>
   )
 }
 
-// ─── Main Page ────────────────────────────────────────────────
-
 export default function EquipoPage() {
-  
-  // Dividir al equipo simuladamente en subsistemas para el diseño institucional
+  useScrollReveal()
   const coreInfrastructure = team.slice(0, 4)
   const operationsLogistics = team.slice(4)
 
   return (
-    <main className="bg-[#050816] text-white min-h-screen overflow-x-hidden">
+    <main className="bg-black text-white min-h-screen selection:bg-blue-600/30 overflow-hidden font-inter">
       
-      {/* ══ BACKGROUND TOPOLOGY SYSTEM ════════════════════════ */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
-            `,
-            backgroundSize: '40px 40px',
-            maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)'
-          }}
-        />
-        <div className="absolute top-[10%] left-[-10%] w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_rgba(14,165,233,0.05),_transparent_60%)] pointer-events-none blur-3xl" />
-      </div>
-
-      {/* ── HERO: COLLECTIVE IDENTITY ── */}
-      <section className="relative z-10 pt-32 pb-24 px-6 md:px-12 lg:px-20 border-b border-white/[0.04]">
-        
-        {/* Animated Node Graph Simulation (Background) */}
-        <div className="absolute right-0 top-0 w-full h-full max-w-3xl opacity-20 pointer-events-none overflow-hidden z-0 hidden lg:block">
-           <svg className="w-full h-full" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-             <path d="M100,500 L300,300 L600,400 L750,150" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="4 4" className="animate-[dash_20s_linear_infinite]" />
-             <path d="M200,100 L300,300 L500,200 L750,150" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-             <path d="M300,300 L400,500 L600,400" stroke="rgba(139,92,246,0.2)" strokeWidth="1" />
-             
-             <circle cx="300" cy="300" r="4" fill="#f59e0b" className="animate-pulse" />
-             <circle cx="100" cy="500" r="2" fill="#ffffff" />
-             <circle cx="600" cy="400" r="3" fill="#8b5cf6" />
-             <circle cx="750" cy="150" r="2" fill="#ffffff" />
-             <circle cx="200" cy="100" r="2" fill="#ffffff" />
-             <circle cx="500" cy="200" r="2" fill="#ffffff" />
-             <circle cx="400" cy="500" r="2" fill="#ffffff" />
-           </svg>
+      {/* ══ HERO ══════════════════════════════════════════════ */}
+      <section className="relative pt-48 pb-32 px-6 md:px-24 border-b border-white/5 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-[#02040a]" />
+          <div className="absolute inset-0 bg-grid-animated opacity-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(59,130,246,0.1),transparent_70%)]" />
+          
+          {/* Animated node graph */}
+          <div className="absolute right-0 top-0 w-1/2 h-full opacity-20 pointer-events-none hidden lg:block">
+            <svg className="w-full h-full" viewBox="0 0 400 600">
+              <motion.path 
+                d="M50,500 L150,300 L300,400 L350,150" 
+                stroke="white" 
+                strokeWidth="0.5" 
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
+              />
+              <circle cx="150" cy="300" r="2" fill="#3b82f6" />
+              <circle cx="300" cy="400" r="2" fill="#3b82f6" />
+            </svg>
+          </div>
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col items-start relative z-10">
-          <div className="flex items-center gap-3 mb-8">
-            <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
-              Human Capital
-            </span>
-          </div>
-
-          <h1 
-            className="mb-8 text-[clamp(40px,6vw,90px)] font-light tracking-tight leading-[0.95] text-white"
-            style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-          >
-            NUESTRO<br />
-            <span className="text-white/30">EQUIPO.</span>
-          </h1>
-
-          <p 
-            className="max-w-2xl text-[15px] md:text-[17px] text-white/50 leading-relaxed mb-12"
-            style={{ fontFamily: '"Inter", sans-serif' }}
-          >
-            Una fuerza distribuida de estudiantes e ingenieros en formación. Estructuramos misiones de investigación tecnológica, desarrollo de sistemas y ciberseguridad avanzada.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-6 border border-white/[0.04] bg-[#ffffff01] px-6 py-4">
-            <div className="flex items-center gap-4 pr-6 border-r border-white/[0.08]">
-              <Network className="w-4 h-4 text-amber-500" />
-              <div className="flex flex-col">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">Miembros Activos</span>
-                <span className="font-mono text-[12px] text-white/80">{team.length} INGENIEROS</span>
+        <div className="relative z-10 max-w-[1700px] mx-auto w-full">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 1 }} className="max-w-4xl">
+            <AtmosphereTag className="mb-12">Human Capital & Technical Leadership</AtmosphereTag>
+            <h1 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,10rem)] leading-[0.85] tracking-tight uppercase text-white mb-12">
+              Nuestro<br /><span className="text-blue-600">Equipo.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white/40 leading-relaxed font-inter max-w-3xl mb-16">
+              Una fuerza distribuida de estudiantes e ingenieros en formación. Estructuramos misiones de investigación tecnológica, desarrollo de sistemas y ciberseguridad avanzada.
+            </p>
+            
+            <div className="flex flex-wrap gap-12 border border-white/10 bg-white/[0.01] px-10 py-6 backdrop-blur-xl inline-flex">
+              <div className="flex items-center gap-6">
+                <Users size={20} className="text-blue-500/40" />
+                <div className="flex flex-col">
+                  <span className="font-ibm-plex text-[9px] tracking-[0.2em] text-white/30 uppercase font-bold">Miembros Activos</span>
+                  <span className="font-space-grotesk text-2xl font-bold text-white">{team.length} INGENIEROS</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <Network size={20} className="text-blue-500/40" />
+                <div className="flex flex-col">
+                  <span className="font-ibm-plex text-[9px] tracking-[0.2em] text-white/30 uppercase font-bold">Áreas Técnicas</span>
+                  <span className="font-space-grotesk text-2xl font-bold text-white">MULTI-NODE</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Database className="w-4 h-4 text-violet-500" />
-              <div className="flex flex-col">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">Architecture</span>
-                <span className="font-mono text-[12px] text-white/80">MULTI-ÁREA</span>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── CORE INFRASTRUCTURE (Directiva Principal) ── */}
-      <section className="relative z-10 py-24 px-6 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
+      {/* ══ LEADERSHIP ══════════════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24">
+        <div className="max-w-[1700px] mx-auto">
           <DivisionHeader 
-            title={<>Directiva y <span className="text-white/30">Liderazgo.</span></>}
-            subtitle="LEADERSHIP BOARD // MESA DIRECTIVA"
+            title={<>Directiva y <span className="text-blue-600">Liderazgo.</span></>}
+            subtitle="LEADERSHIP_BOARD // MESA_DIRECTIVA"
             icon={Shield}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border border-white/5">
             {coreInfrastructure.map((m, i) => (
               <MemberCard key={m.name} member={m} />
             ))}
@@ -133,16 +105,16 @@ export default function EquipoPage() {
         </div>
       </section>
 
-      {/* ── LOGISTICS & OPERATIONS (Resto del equipo) ── */}
+      {/* ══ OPERATIONS ══════════════════════════════════════════ */}
       {operationsLogistics.length > 0 && (
-        <section className="relative z-10 py-16 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-y border-white/[0.04]">
-          <div className="max-w-7xl mx-auto">
+        <section className="py-48 px-6 md:px-24 bg-white/[0.01] border-y border-white/5">
+          <div className="max-w-[1700px] mx-auto">
             <DivisionHeader 
-              title={<>Equipos de <span className="text-white/30">Trabajo.</span></>}
-              subtitle="ÁREAS TÉCNICAS // OPERACIONES"
+              title={<>Equipos de <span className="text-blue-600">Trabajo.</span></>}
+              subtitle="TECHNICAL_UNITS // OPERATIONS"
               icon={Activity}
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border border-white/5">
               {operationsLogistics.map((m, i) => (
                 <MemberCard key={m.name} member={m} />
               ))}
@@ -151,100 +123,71 @@ export default function EquipoPage() {
         </section>
       )}
 
-      {/* ── ADVISORY PROTOCOL (Mentores) ── */}
-      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* ══ ADVISORY ═══════════════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24">
+        <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-24 items-center">
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-1.5 h-1.5 bg-violet-500 animate-pulse" />
-              <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
-                Respaldo Académico
-              </span>
-            </div>
-            
-            <h2 
-              className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05] text-white/90 mb-8"
-              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-            >
-              Mentoría y <br /><span className="text-white/30">Asesoría.</span>
+            <AtmosphereTag className="mb-12">Protocolo de Asesoría Académica</AtmosphereTag>
+            <h2 className="text-5xl md:text-7xl font-space-grotesk font-bold text-white mb-10 tracking-tighter leading-[0.95]">
+              Mentoría y<br /><span className="text-blue-600">Asesoría.</span>
             </h2>
-            
-            <p className="text-white/40 text-[14px] leading-relaxed mb-10" style={{ fontFamily: '"Inter", sans-serif' }}>
-              La arquitectura del ecosistema requiere validación. Buscamos académicos e investigadores dispuestos a fungir como nodos asesores, proveyendo respaldo institucional y guía en investigaciones de alto impacto.
+            <p className="text-xl text-white/40 leading-relaxed font-inter mb-12 max-w-3xl">
+              La arquitectura del ecosistema requiere validación. Buscamos académicos e investigadores dispuestos a fungir como nodos asesores, proveyendo respaldo institucional y guía en investigaciones de alto impacto técnico.
             </p>
 
-            <div className="flex flex-col gap-4 mb-10">
-               <div className="p-4 border border-white/[0.06] bg-[#ffffff01] flex items-start gap-4">
-                  <div className="p-2 border border-white/[0.04] bg-[#030408]"><Shield className="w-4 h-4 text-white/40" /></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-16">
+               <div className="p-8 border border-white/10 bg-white/[0.02] flex items-start gap-6 group hover:border-blue-500/20 transition-all duration-500">
+                  <div className="w-12 h-12 border border-white/10 flex items-center justify-center bg-black group-hover:border-blue-500/40 transition-all">
+                    <Shield size={18} className="text-white/20 group-hover:text-blue-400" />
+                  </div>
                   <div>
-                     <span className="font-mono text-[10px] tracking-widest uppercase text-white/70 block mb-1">Institutional Backing</span>
-                     <span className="text-[12px] text-white/30">Habilitación de recursos y convenios formales.</span>
+                     <span className="font-ibm-plex text-[10px] tracking-[0.2em] uppercase text-white/60 block mb-2 font-bold text-blue-500/80">Institutional Backing</span>
+                     <span className="text-[14px] text-white/30 leading-relaxed">Habilitación de recursos y convenios formales.</span>
                   </div>
                </div>
-               <div className="p-4 border border-white/[0.06] bg-[#ffffff01] flex items-start gap-4">
-                  <div className="p-2 border border-white/[0.04] bg-[#030408]"><Database className="w-4 h-4 text-white/40" /></div>
+               <div className="p-8 border border-white/10 bg-white/[0.02] flex items-start gap-6 group hover:border-blue-500/20 transition-all duration-500">
+                  <div className="w-12 h-12 border border-white/10 flex items-center justify-center bg-black group-hover:border-blue-500/40 transition-all">
+                    <Database size={18} className="text-white/20 group-hover:text-blue-400" />
+                  </div>
                   <div>
-                     <span className="font-mono text-[10px] tracking-widest uppercase text-white/70 block mb-1">Research Guidance</span>
-                     <span className="text-[12px] text-white/30">Mentoría técnica en papers y sistemas avanzados.</span>
+                     <span className="font-ibm-plex text-[10px] tracking-[0.2em] uppercase text-white/60 block mb-2 font-bold text-blue-500/80">Research Guidance</span>
+                     <span className="text-[14px] text-white/30 leading-relaxed">Mentoría técnica en papers y sistemas avanzados.</span>
                   </div>
                </div>
             </div>
 
-            <Link 
-              to="/contacto"
-              onClick={() => window.scrollTo(0, 0)}
-              className="group inline-flex items-center gap-3 px-6 py-3 border border-white/[0.1] bg-white/[0.02] hover:bg-white hover:text-[#050816] text-[10px] font-mono tracking-widest uppercase text-white transition-all duration-300"
-            >
-              Contactar para Mentoría <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </Link>
+            <EngineeringButton to="/contacto">Contactar para Mentoría</EngineeringButton>
           </div>
 
-          {/* Abstract Interface Graphic */}
-          <div className="relative aspect-square border border-white/[0.04] bg-[#030408] overflow-hidden flex items-center justify-center">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,white_1px,transparent_1px)] bg-[size:10px_10px] opacity-[0.03]" />
-            <div className="w-48 h-48 border border-dashed border-violet-500/20 rounded-full animate-[spin_40s_linear_infinite]" />
-            <div className="absolute w-32 h-32 border border-white/[0.05] rounded-full animate-[spin_20s_linear_infinite_reverse]" />
-            <div className="absolute w-16 h-16 bg-violet-500/10 blur-[20px] rounded-full animate-pulse" />
+          <div className="relative aspect-square border border-white/10 bg-black overflow-hidden flex items-center justify-center group">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+            <div className="w-64 h-64 border border-dashed border-blue-500/20 rounded-full animate-[spin_60s_linear_infinite]" />
+            <div className="absolute w-40 h-40 border border-white/5 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
+            <div className="absolute w-20 h-20 bg-blue-500/10 blur-[40px] rounded-full animate-pulse" />
             
-            <div className="absolute bottom-6 right-6 font-mono text-[8px] text-white/20 tracking-[0.2em] text-right">
-              BÚSQUEDA DE ASESORES<br />
-              COMUNIDAD IEEE UNI
+            <div className="absolute bottom-10 right-10 font-ibm-plex text-[9px] text-white/10 tracking-[0.3em] text-right font-bold uppercase">
+              BÚSQUEDA_DE_NODOS_ASESORES<br />
+              ESTÁNDARES_IEEE_UNI
             </div>
+            <Crosshair size={32} className="text-blue-500/10 group-hover:text-blue-500/20 transition-colors" />
           </div>
         </div>
       </section>
 
-      {/* ── RECRUITMENT NODE (Únete a la directiva) ── */}
-      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-t border-white/[0.04]">
-        <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
-          <Terminal className="w-6 h-6 text-amber-500/50 mb-6" />
-          
-          <h2 
-            className="text-3xl md:text-5xl font-light tracking-tight leading-[1.05] text-white/90 mb-6"
-            style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-          >
-            Únete a la <span className="text-white/30">Sociedad.</span>
+      {/* ══ RECRUITMENT ═════════════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24 bg-white/[0.01] border-t border-white/5 text-center">
+        <div className="max-w-4xl mx-auto flex flex-col items-center">
+          <Cpu className="w-10 h-10 text-blue-500/40 mb-10" />
+          <AtmosphereTag className="mb-12 justify-center">Únete a la Sociedad</AtmosphereTag>
+          <h2 className="text-5xl md:text-7xl font-space-grotesk font-bold text-white mb-10 tracking-tighter leading-[0.95]">
+            Expande el<br /><span className="text-blue-600">Sistema.</span>
           </h2>
-          
-          <p className="text-white/40 text-[14px] leading-relaxed mb-12 max-w-xl" style={{ fontFamily: '"Inter", sans-serif' }}>
-            Buscamos ingenieros en formación para escalar nuestros proyectos. Si te apasiona la tecnología, la investigación o la gestión logística, hay un lugar para ti.
+          <p className="text-xl text-white/40 leading-relaxed font-inter mb-16 max-w-2xl">
+            Buscamos ingenieros en formación para escalar nuestros proyectos. Si te apasiona la tecnología, la investigación o la gestión de comunidades técnicas, hay un lugar para ti.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link 
-              to="/contacto"
-              onClick={() => window.scrollTo(0, 0)} 
-              className="inline-flex justify-center items-center px-8 py-3.5 bg-amber-500 text-[#050816] font-mono text-[10px] tracking-widest uppercase hover:bg-amber-400 transition-colors"
-            >
-              POSTULAR COMO MIEMBRO
-            </Link>
-            <Link 
-              to="/proyectos"
-              onClick={() => window.scrollTo(0, 0)} 
-              className="inline-flex justify-center items-center px-8 py-3.5 border border-white/[0.1] bg-[#030408] text-white/60 font-mono text-[10px] tracking-widest uppercase hover:border-white/[0.2] hover:text-white transition-all"
-            >
-              VER PROYECTOS
-            </Link>
+          <div className="flex flex-col sm:flex-row gap-8">
+            <EngineeringButton to="/contacto">Postular como Miembro</EngineeringButton>
+            <EngineeringButton to="/proyectos" secondary>Explorar Proyectos</EngineeringButton>
           </div>
         </div>
       </section>

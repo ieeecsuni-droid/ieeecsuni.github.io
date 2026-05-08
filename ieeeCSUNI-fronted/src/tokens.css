@@ -2,9 +2,9 @@
 
 :root {
   /* Surfaces */
-  --color-surface-base: #050816;
-  --color-surface-elevated: #0B1020;
-  --color-surface-overlay: #111827;
+  --color-surface-base: #02040A;
+  --color-surface-elevated: #050816;
+  --color-surface-overlay: #07101D;
 
   /* Accents */
   --color-accent-blue: #0ea5e9;

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { IEEECSLogo } from '../../assets/IEEECSLogo'
 import { navLinks } from '../../data'
 import { Menu, X } from 'lucide-react'
 
-const UNILogo = ({ className = "" }) => (
+const UNILogo = ({ className = '' }) => (
   <img
     src="https://upload.wikimedia.org/wikipedia/commons/d/da/Escudo_UNI.png"
     alt="Logo UNI"
-    className={`${className} object-contain filter brightness-0 invert opacity-80 group-hover:opacity-100 transition-opacity`}
+    className={`${className} object-contain filter brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity duration-300`}
   />
 )
 
@@ -18,8 +19,11 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
+    const onScroll = () => setScrolled(window.scrollY > 18)
+
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
+
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -29,57 +33,78 @@ export function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [menuOpen])
 
   const isActive = (to) => location.pathname === to
 
+  const scrollTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   return (
     <>
-      {/* ─── Plan V2: System Control Layer (LeetCode Inspired) ─── */}
       <nav
         id="main-navbar"
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ease-out flex items-center border-b h-16
-          ${scrolled
-            ? 'bg-[#05070C]/40 backdrop-blur-xl border-white/[0.12] shadow-[0_4px_30px_rgba(0,0,0,0.1)]'
-            : 'bg-[#05070C]/80 backdrop-blur-sm border-white/[0.06]'
+        className={`fixed top-0 left-0 right-0 z-[100] flex items-center border-b transition-all duration-500 ease-out
+          ${
+            scrolled
+              ? 'h-16 bg-[#02040A]/82 backdrop-blur-2xl border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.45)]'
+              : 'h-24 bg-transparent border-transparent'
           }
         `}
       >
-        <div className="relative w-full max-w-[1440px] mx-auto px-8 md:px-12 flex items-center h-full">
-
-          {/* ─── Identity Group (Left) ─── */}
-          <div className="flex items-center">
+        <div className="w-full max-w-[1700px] mx-auto px-6 md:px-16 flex items-center justify-between h-full">
+          {/* ─── Identity Left ─── */}
+          <div className="flex-1 flex justify-start">
             <Link
               to="/"
-              className="flex items-center no-underline group shrink-0"
-              onClick={() => window.scrollTo(0, 0)}
+              className="flex items-center gap-4 group shrink-0 no-underline"
+              onClick={scrollTop}
+              aria-label="Ir al inicio"
             >
-              <div className="flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-                <IEEECSLogo size={28} className="text-white" />
+              <div className="flex items-center justify-center transition-all duration-300 group-hover:scale-[1.04] group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.35)]">
+                <IEEECSLogo
+                  size={scrolled ? 28 : 34}
+                  className="text-white/90 group-hover:text-white transition-colors duration-300"
+                />
               </div>
             </Link>
           </div>
 
-          {/* Desktop Nav Links (Plan V2 - Absolute Centered) */}
-          <ul className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 m-0 p-0 list-none">
+          {/* ─── Nav Links Center ─── */}
+          <ul className="hidden lg:flex items-center gap-10 m-0 p-0 list-none">
             {navLinks.map(({ to, label }) => {
               const active = isActive(to)
+
               return (
                 <li key={to}>
                   <Link
                     to={to}
-                    onClick={() => window.scrollTo(0, 0)}
-                    className={`group relative text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300 no-underline py-1
-                      ${active ? 'text-white' : 'text-white/40 hover:text-white'}
+                    onClick={scrollTop}
+                    aria-current={active ? 'page' : undefined}
+                    className={`group relative py-1 text-[10px] font-ibm-plex font-bold uppercase tracking-[0.25em] no-underline transition-all duration-300
+                      ${
+                        active
+                          ? 'text-blue-400'
+                          : 'text-white/32 hover:text-white/80'
+                      }
                     `}
-                    style={{ fontFamily: '"Space Grotesk", sans-serif' }}
                   >
                     {label}
-                    {/* Elegant active indicator (Expanding Blue Line) */}
+
                     <span
-                      className={`absolute -bottom-2.5 left-0 h-[2px] bg-blue-500 transition-transform origin-center duration-300 ease-out
-                        ${active ? 'w-full scale-x-100' : 'w-full scale-x-0 group-hover:scale-x-100'}
+                      className={`absolute -bottom-2 left-1/2 h-[1px] -translate-x-1/2 bg-blue-400 transition-all duration-300 ease-out
+                        ${
+                          active
+                            ? 'w-full opacity-100'
+                            : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-100'
+                        }
                       `}
                     />
                   </Link>
@@ -88,24 +113,27 @@ export function Navbar() {
             })}
           </ul>
 
-          {/* ─── Right Actions (Absolute Right) ─── */}
-          <div className="flex items-center gap-6 ml-auto">
-            <a 
-              href="https://www.uni.edu.pe/" 
-              target="_blank" 
+          {/* ─── Actions Right ─── */}
+          <div className="flex-1 flex justify-end items-center gap-8">
+            <a
+              href="https://www.uni.edu.pe/"
+              target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center group no-underline transition-all duration-300 ml-4"
+              className="hidden sm:flex items-center group no-underline transition-all duration-300"
+              aria-label="Visitar sitio web de la UNI"
             >
-              <div className="w-8 h-8 rounded-full overflow-hidden border border-white/5 group-hover:border-white/20 transition-all flex items-center justify-center bg-white/[0.02]">
+              <div className="w-9 h-9 border border-white/[0.06] group-hover:border-blue-400/30 transition-all duration-300 flex items-center justify-center bg-white/[0.015] group-hover:bg-white/[0.03]">
                 <UNILogo className="w-6 h-6" />
               </div>
             </a>
 
-            {/* Mobile Menu Toggle */}
             <button
-              className="lg:hidden p-2 text-white/70 hover:text-white transition-colors bg-white/5 rounded-md"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
+              type="button"
+              className="lg:hidden p-3 text-white/55 hover:text-white transition-all duration-300 bg-white/[0.04] hover:bg-white/[0.07] active:scale-95"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -113,38 +141,73 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* ─── Mobile Menu Panel (Plan V2: Full-Screen Terminal) ─── */}
+      {/* ─── Mobile Menu Panel ─── */}
       <div
-        className={`fixed inset-0 z-[200] bg-[#05070C] flex flex-col transition-transform duration-500 ease-out
-          ${menuOpen ? 'translate-x-0' : 'translate-x-full'}
+        id="mobile-menu"
+        className={`fixed inset-0 z-[200] bg-black/98 backdrop-blur-3xl flex flex-col transition-all duration-500 ease-[0.16,1,0.3,1]
+          ${
+            menuOpen
+              ? 'opacity-100 pointer-events-auto'
+              : 'opacity-0 pointer-events-none'
+          }
         `}
       >
-        <div className="flex items-center justify-between p-6 border-b border-white/[0.06]">
-          <div />
+        <div className="flex items-center justify-between p-10">
+          <IEEECSLogo size={32} className="text-blue-500/25" />
+
           <button
+            type="button"
             onClick={() => setMenuOpen(false)}
-            className="p-2 text-white/50 hover:text-white bg-white/5 rounded-full"
+            className="w-12 h-12 flex items-center justify-center text-white/35 hover:text-white bg-white/[0.04] hover:bg-white/[0.07] border border-white/10 rounded-full transition-all duration-300"
+            aria-label="Cerrar menú"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-8 py-12 flex flex-col gap-8">
-          {navLinks.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className={`text-3xl font-bold tracking-tighter no-underline transition-all
-                ${isActive(to) ? 'text-blue-500' : 'text-white/40 hover:text-white'}
-              `}
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="flex-1 px-12 py-16 flex flex-col justify-center gap-12">
+          {navLinks.map(({ to, label }, i) => {
+            const active = isActive(to)
+
+            return (
+              <motion.div
+                key={to}
+                initial={false}
+                animate={
+                  menuOpen
+                    ? { opacity: 1, x: 0 }
+                    : { opacity: 0, x: -24 }
+                }
+                transition={{
+                  delay: menuOpen ? i * 0.075 + 0.15 : 0,
+                  duration: 0.35,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <Link
+                  to={to}
+                  className={`block text-5xl font-space-grotesk font-bold tracking-tighter no-underline transition-all duration-300
+                    ${
+                      active
+                        ? 'text-blue-400'
+                        : 'text-white/20 hover:text-white'
+                    }
+                  `}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {label}
+                </Link>
+              </motion.div>
+            )
+          })}
         </div>
 
-
+        <div className="p-12 border-t border-white/[0.06]">
+          <span className="font-ibm-plex text-[9px] text-white/12 uppercase tracking-[0.5em] font-bold">
+            LIMA_UNI // SYSTEMS_OBSERVATORY
+          </span>
+        </div>
       </div>
     </>
   )

@@ -1,32 +1,36 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { useToast } from '../context/ToastContext'
+import { AtmosphereTag } from '../components/ui/AtmosphereTag'
+import { EngineeringButton } from '../components/ui/EngineeringButton'
 import { 
   Mail, MapPin, Clock, Linkedin, Instagram, Github, 
-  Terminal, Server, Shield, Network, Loader2, Database, ChevronRight
+  Terminal, Server, Shield, Network, Loader2, Database, ChevronRight, Activity, Crosshair, HelpCircle
 } from 'lucide-react'
-
-// ─── Componentes de UI Internos ──────────────────────────────
 
 function InputField({ label, type = "text", name, value, onChange, required, placeholder, options }) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="font-mono text-[9px] tracking-widest text-white/50 uppercase flex items-center justify-between">
+    <div className="flex flex-col gap-3">
+      <label className="font-ibm-plex text-[10px] tracking-[0.3em] text-white/30 uppercase flex items-center justify-between font-bold">
         <span>{label}</span>
         {required && <span className="text-blue-500/70">*</span>}
       </label>
       
       {type === 'select' ? (
-        <select 
-          name={name} 
-          required={required} 
-          value={value} 
-          onChange={onChange}
-          className="bg-[#030408] border border-white/[0.08] p-3 md:p-4 rounded-sm text-[13px] text-white/80 font-mono outline-none focus:border-blue-500/50 transition-all appearance-none"
-        >
-          <option value="">-- SELECCIONAR --</option>
-          {options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-        </select>
+        <div className="relative group">
+          <select 
+            name={name} 
+            required={required} 
+            value={value} 
+            onChange={onChange}
+            className="w-full bg-black border border-white/10 p-4 text-[13px] text-white font-ibm-plex outline-none focus:border-blue-500/40 transition-all appearance-none"
+          >
+            <option value="" className="bg-black">-- SELECCIONAR --</option>
+            {options?.map(opt => <option key={opt} value={opt} className="bg-black">{opt}</option>)}
+          </select>
+          <ChevronRight size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 rotate-90 pointer-events-none" />
+        </div>
       ) : type === 'textarea' ? (
         <textarea 
           name={name} 
@@ -34,7 +38,7 @@ function InputField({ label, type = "text", name, value, onChange, required, pla
           value={value} 
           onChange={onChange}
           placeholder={placeholder}
-          className="bg-[#030408] border border-white/[0.08] p-3 md:p-4 rounded-sm text-[13px] text-white/80 font-mono outline-none focus:border-blue-500/50 transition-all min-h-[140px] resize-none placeholder:text-white/20"
+          className="w-full bg-black border border-white/10 p-4 text-[13px] text-white font-ibm-plex outline-none focus:border-blue-500/40 transition-all min-h-[160px] resize-none placeholder:text-white/10"
         />
       ) : (
         <input 
@@ -44,7 +48,7 @@ function InputField({ label, type = "text", name, value, onChange, required, pla
           value={value} 
           onChange={onChange}
           placeholder={placeholder}
-          className="bg-[#030408] border border-white/[0.08] p-3 md:p-4 rounded-sm text-[13px] text-white/80 font-mono outline-none focus:border-blue-500/50 transition-all placeholder:text-white/20"
+          className="w-full bg-black border border-white/10 p-4 text-[13px] text-white font-ibm-plex outline-none focus:border-blue-500/40 transition-all placeholder:text-white/10"
         />
       )}
     </div>
@@ -55,21 +59,19 @@ function ProtocolTab({ active, label, icon: Icon, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`flex-1 flex flex-col items-center justify-center gap-3 p-4 md:p-6 border-b-2 transition-all duration-300 ${
-        active 
-        ? 'border-blue-500 bg-gradient-to-t from-blue-500/10 to-transparent text-blue-500' 
-        : 'border-white/[0.04] bg-[#ffffff01] text-white/40 hover:text-white/80 hover:bg-[#ffffff03]'
+      className={`flex-1 flex items-center justify-center gap-4 p-6 border transition-all duration-700
+        ${active 
+        ? 'border-blue-500/40 bg-blue-600/10 text-white' 
+        : 'border-white/5 bg-white/[0.01] text-white/20 hover:text-white/40 hover:bg-white/[0.02]'
       }`}
     >
-      <Icon className={`w-5 h-5 ${active ? 'animate-pulse' : ''}`} />
-      <span className="font-mono text-[10px] md:text-[11px] tracking-widest uppercase text-center">
+      <Icon size={16} className={`${active ? 'text-blue-500' : 'opacity-50'}`} />
+      <span className="font-space-grotesk font-bold text-[10px] tracking-[0.25em] uppercase text-center">
         {label}
       </span>
     </button>
   )
 }
-
-// ─── Main Page ────────────────────────────────────────────────
 
 export default function ContactoPage() {
   useScrollReveal()
@@ -120,236 +122,202 @@ export default function ContactoPage() {
   }
 
   return (
-    <main className="bg-[#050816] text-white min-h-screen overflow-x-hidden selection:bg-blue-500/30 selection:text-white">
+    <main className="bg-black text-white min-h-screen selection:bg-blue-600/30 overflow-hidden font-inter">
       
-      {/* ══ BACKGROUND SYSTEM ══════════════════════════════════ */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
-            `,
-            backgroundSize: '100px 100px',
-            maskImage: 'radial-gradient(ellipse at center, black 10%, transparent 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 10%, transparent 80%)'
-          }}
-        />
-        <div className="absolute top-[-20%] left-[-10%] w-[1000px] h-[1000px] bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.03),_transparent_50%)] blur-[100px]" />
-      </div>
-
-      {/* ── HERO: COMMUNICATION GATEWAY ── */}
-      <section className="relative z-10 pt-48 pb-32 px-6 md:px-12 lg:px-20 border-b border-white/[0.04] overflow-hidden">
-        {/* Simple Full-Cover Background (febrero2026) */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+      {/* ══ HERO ══════════════════════════════════════════════ */}
+      <section className="relative pt-48 pb-32 px-6 md:px-24 border-b border-white/5 overflow-hidden">
+        <div className="absolute inset-0 z-0">
           <div 
-            className="absolute inset-0 bg-cover bg-center grayscale opacity-[0.1] transition-opacity duration-1000"
+            className="absolute inset-0 bg-cover bg-center grayscale opacity-10"
             style={{ 
               backgroundImage: "url('/febrero2026.jpg')",
-              filter: 'blur(8px)',
+              filter: 'blur(4px)',
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050816] via-transparent to-[#050816]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05),transparent_70%)]" />
+          <div className="absolute inset-0 bg-grid-animated opacity-5" />
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center text-center">
-          <div className="reveal flex items-center gap-3 mb-8">
-            <Shield className="w-4 h-4 text-blue-500" />
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
-              IEEE CS UNI
-            </span>
-          </div>
 
-          <h1 
-            className="reveal mb-8 text-[clamp(40px,7vw,90px)] font-light tracking-tight leading-[0.95] text-white"
-            style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-          >
-            CONTACTO<br />
-            <span className="text-white/30">INSTITUCIONAL.</span>
-          </h1>
+        <div className="relative z-10 max-w-[1700px] mx-auto w-full flex flex-col items-center text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            <AtmosphereTag className="mb-12 justify-center">Communication Gateway v2.4</AtmosphereTag>
+            <h1 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,10rem)] leading-[0.85] tracking-tight uppercase text-white mb-12">
+              Contacto<br /><span className="text-blue-600">Institucional.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white/40 leading-relaxed font-inter max-w-3xl mb-16">
+              Punto de acceso estructurado para coordinación técnica, consultas institucionales e integración de talento. Todas las transmisiones están monitoreadas por el sistema.
+            </p>
+          </motion.div>
 
-          <p 
-            className="max-w-2xl text-[15px] md:text-[17px] text-white/50 leading-relaxed mb-12"
-            style={{ fontFamily: '"Inter", sans-serif' }}
-          >
-            Punto de acceso estructurado para coordinación técnica, consultas institucionales e integración de talento. Todas las transmisiones están monitoreadas por el sistema.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-6 border border-white/[0.04] bg-[#ffffff01] px-6 py-4 font-mono text-[9px] tracking-widest text-white/40 uppercase">
-            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"/> ESTADO: OPERATIVO</span>
-            <span className="hidden md:block w-px h-4 bg-white/20" />
-            <span className="flex items-center gap-2"><Terminal className="w-3 h-3 text-white/20" /> CANALES: ACTIVOS</span>
-            <span className="hidden md:block w-px h-4 bg-white/20" />
-            <span className="flex items-center gap-2"><Clock className="w-3 h-3 text-white/20" /> RESPUESTA: {"<"} 24H</span>
+          <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-12 border border-white/10 bg-white/[0.01] px-12 py-8 backdrop-blur-xl">
+            {[
+              { val: 'ACTIVO', label: 'Estado del Sistema', color: 'text-emerald-500' },
+              { val: 'SECURE', label: 'Protocolo de Encriptación', color: 'text-blue-500/60' },
+              { val: 'CANALES', label: 'Tráfico de Red', color: 'text-white/40' },
+              { val: '< 24H', label: 'Tiempo de Respuesta', color: 'text-white/40' },
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <span className={`font-space-grotesk text-2xl font-bold mb-2 ${stat.color}`}>{stat.val}</span>
+                <span className="font-ibm-plex text-[8px] tracking-[0.2em] text-white/20 uppercase font-bold">{stat.label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── INTERFACE CORE ── */}
-      <section className="relative z-10 py-24 px-6 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-16 items-start">
+      {/* ══ INTERFACE CORE ═════════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24">
+        <div className="max-w-[1700px] mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-24 items-start">
           
-          {/* LEFT: DATA ENTRY SYSTEM */}
-          <div className="flex flex-col">
-            
-            {/* Protocol Tabs */}
-            <div className="flex flex-col md:flex-row mb-12 border border-white/[0.04] bg-[#030408]">
-              <ProtocolTab active={activeTab === 'miembro'} label="UNIRSE AL EQUIPO" icon={Network} onClick={() => setActiveTab('miembro')} />
-              <ProtocolTab active={activeTab === 'evento'} label="PROPONER EVENTO" icon={Server} onClick={() => setActiveTab('evento')} />
-              <ProtocolTab active={activeTab === 'mentor'} label="SER MENTOR" icon={Database} onClick={() => setActiveTab('mentor')} />
+          {/* FORM CONSOLE */}
+          <div className="reveal flex flex-col">
+            <div className="flex flex-col md:flex-row mb-1 gap-px bg-white/5 border border-white/5">
+              <ProtocolTab active={activeTab === 'miembro'} label="Unirse al Equipo" icon={Network} onClick={() => setActiveTab('miembro')} />
+              <ProtocolTab active={activeTab === 'evento'} label="Proponer Evento" icon={Server} onClick={() => setActiveTab('evento')} />
+              <ProtocolTab active={activeTab === 'mentor'} label="Ser Mentor" icon={Database} onClick={() => setActiveTab('mentor')} />
             </div>
 
-            {/* Form Interface */}
-            <div className="bg-[#ffffff01] border border-white/[0.04] p-8 md:p-12 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 font-mono text-[8px] text-white/10">FORM_V2.4</div>
+            <div className="relative bg-white/[0.01] border border-white/5 p-10 md:p-16">
+              <div className="absolute top-8 right-10 flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                <span className="font-ibm-plex text-[9px] tracking-[0.3em] text-white/20 uppercase font-bold">Transmit_Buffer_v2</span>
+              </div>
               
-              <div className="mb-10">
-                <h3 className="text-2xl font-light text-white mb-2" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
+              <div className="mb-16">
+                <h3 className="text-3xl font-space-grotesk font-bold text-white mb-4">
                   {activeTab === 'miembro' && "Solicitud de Integración"}
                   {activeTab === 'evento' && "Registro de Iniciativa"}
                   {activeTab === 'mentor' && "Propuesta de Mentoría"}
                 </h3>
-                <p className="font-mono text-[10px] tracking-widest uppercase text-white/40">
-                  COMPLETA LOS DATOS REQUERIDOS
-                </p>
+                <div className="w-12 h-px bg-blue-500/30" />
               </div>
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                
-                {/* Core Identity */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-white/[0.04]">
-                  <InputField label="NOMBRE COMPLETO" name="nombre" required placeholder="Ej. César Adrian" value={form.nombre} onChange={handleChange} />
-                  <InputField label="CORREO INSTITUCIONAL" type="email" name="email" required placeholder="usuario@uni.edu.pe" value={form.email} onChange={handleChange} />
+              <form onSubmit={handleSubmit} className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pb-10 border-b border-white/5">
+                  <InputField label="Nombre Completo" name="nombre" required placeholder="Ej. Alan Turing" value={form.nombre} onChange={handleChange} />
+                  <InputField label="Correo Institucional" type="email" name="email" required placeholder="usuario@uni.edu.pe" value={form.email} onChange={handleChange} />
                 </div>
 
-                {/* Conditional Payloads */}
                 <div className="min-h-[100px]">
                   {activeTab === 'miembro' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-500">
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-10">
                       <InputField 
-                        label="CARRERA" type="select" name="carrera" required value={form.carrera} onChange={handleChange}
-                        options={['Ingeniería de Ciberseguridad', 'Ingeniería Eléctrica', 'Ingeniería Electrónica', 'Ingeniería de Telecomunicaciones', 'Ingeniería de Sistemas', 'Ingeniería de Software', 'Otro']}
+                        label="Carrera Profesional" type="select" name="carrera" required value={form.carrera} onChange={handleChange}
+                        options={['Ingeniería de Ciberseguridad', 'Ingeniería de Sistemas', 'Ingeniería de Software', 'Ingeniería Electrónica', 'Ingeniería Mecatrónica', 'Ingeniería de Telecomunicaciones', 'Otro']}
                       />
                       <InputField 
-                        label="CICLO ACTUAL" type="select" name="ciclo" required value={form.ciclo} onChange={handleChange}
+                        label="Ciclo Académico" type="select" name="ciclo" required value={form.ciclo} onChange={handleChange}
                         options={[...Array(10)].map((_, i) => `${i+1}° Ciclo`)}
                       />
-                    </div>
+                    </motion.div>
                   )}
 
                   {activeTab === 'evento' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-500">
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-10">
                       <InputField 
-                        label="TIPO DE EVENTO" type="select" name="tipoEvento" required value={form.tipoEvento} onChange={handleChange}
-                        options={['Workshop Técnico', 'Charla / Webinar', 'CTF / Competencia']}
+                        label="Categoría del Evento" type="select" name="tipoEvento" required value={form.tipoEvento} onChange={handleChange}
+                        options={['Workshop Técnico', 'Charla Magistral', 'CTF / Hackathon', 'Conferencia']}
                       />
-                      <InputField label="FECHA TENTATIVA" type="date" name="fechaProbable" required value={form.fechaProbable} onChange={handleChange} />
-                    </div>
+                      <InputField label="Fecha Tentativa" type="date" name="fechaProbable" required value={form.fechaProbable} onChange={handleChange} />
+                    </motion.div>
                   )}
 
                   {activeTab === 'mentor' && (
-                    <div className="animate-in fade-in duration-500">
-                      <InputField label="ÁREA DE EXPERTISE" name="areaExperticia" required placeholder="Ej: Cloud Computing, Forensics..." value={form.areaExperticia} onChange={handleChange} />
-                    </div>
+                    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+                      <InputField label="Dominio Técnico / Expertise" name="areaExperticia" required placeholder="Ej: Deep Learning, Malware Analysis, Cloud..." value={form.areaExperticia} onChange={handleChange} />
+                    </motion.div>
                   )}
                 </div>
 
-                {/* Message Payload */}
-                <div className="pt-2">
-                  <InputField label="MENSAJE O DETALLES" type="textarea" name="mensaje" required placeholder="Describe tu propuesta o intereses..." value={form.mensaje} onChange={handleChange} />
-                </div>
+                <InputField label="Mensaje del Sistema / Detalles" type="textarea" name="mensaje" required placeholder="Describe tu propuesta, intereses o perfil técnico..." value={form.mensaje} onChange={handleChange} />
 
-                {/* Action */}
-                <div className="mt-6 flex justify-end">
+                <div className="flex justify-end pt-10">
                   <button 
                     type="submit" 
                     disabled={loading}
-                    className="group flex items-center gap-3 px-8 py-4 border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500 hover:text-[#050816] text-amber-500 font-mono text-[11px] tracking-[0.2em] uppercase transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none"
+                    className="group relative flex items-center gap-4 px-10 py-5 bg-blue-600/10 border border-blue-500/30 hover:bg-blue-600 hover:border-blue-500 transition-all duration-700 disabled:opacity-50"
                   >
+                    <span className="font-space-grotesk font-bold text-[11px] tracking-[0.3em] uppercase text-blue-400 group-hover:text-white transition-colors">
+                      {loading ? 'Transmitiendo...' : 'Iniciar Transmisión'}
+                    </span>
                     {loading ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> ENVIANDO...</>
+                      <Loader2 size={16} className="animate-spin text-blue-400 group-hover:text-white" />
                     ) : (
-                      <><Terminal className="w-4 h-4 group-hover:text-[#050816]" /> ENVIAR SOLICITUD</>
+                      <Activity size={16} className="text-blue-400 group-hover:text-white transition-colors" />
                     )}
                   </button>
                 </div>
-
               </form>
             </div>
           </div>
 
-          {/* RIGHT: ALTERNATIVE CHANNELS (SIDEBAR) */}
-          <aside className="flex flex-col gap-8">
-            
-            <div className="bg-[#ffffff01] border border-white/[0.04] p-8">
-              <h4 className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50 mb-8 flex items-center gap-2">
-                <Network className="w-3.5 h-3.5" /> Canales Oficiales
-              </h4>
+          {/* SIDEBAR CHANNELS */}
+          <aside className="reveal space-y-12">
+            <div className="p-10 border border-white/10 bg-white/[0.01] backdrop-blur-xl">
+              <div className="flex items-center gap-4 mb-12">
+                <Crosshair size={18} className="text-blue-500/40" />
+                <span className="font-ibm-plex text-[10px] tracking-[0.3em] uppercase text-white/30 font-bold">Canales_Oficiales</span>
+              </div>
               
-              <div className="flex flex-col gap-6">
+              <div className="space-y-10">
                 {[
-                  { icon: Mail, label: 'EMAIL', val: 'ieeecs.uni@gmail.com' },
-                  { icon: MapPin, label: 'UBICACIÓN', val: 'FIEE - UNI, Pabellón Q' },
-                  { icon: Clock, label: 'HORARIO', val: 'Lun-Vie, 17:00-20:00' },
+                  { icon: Mail, label: 'Transmisión Email', val: 'ieeecs.uni@gmail.com' },
+                  { icon: MapPin, label: 'Coordenadas Físicas', val: 'FIEE - UNI, Pabellón Q' },
+                  { icon: Clock, label: 'Ciclo Operativo', val: 'Lun-Vie, 17:00-20:00' },
                 ].map((item, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="p-2 bg-[#030408] border border-white/[0.06] h-fit">
-                      <item.icon className="w-4 h-4 text-white/40" />
+                  <div key={i} className="flex gap-6 group">
+                    <div className="w-10 h-10 border border-white/5 flex items-center justify-center bg-black group-hover:border-blue-500/20 transition-all">
+                      <item.icon size={16} className="text-white/20 group-hover:text-blue-500/40" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-mono text-[9px] tracking-widest uppercase text-white/30 mb-1">{item.label}</span>
-                      <span className="text-[13px] text-white/80" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>{item.val}</span>
+                      <span className="font-ibm-plex text-[9px] tracking-[0.2em] uppercase text-white/20 mb-1 font-bold">{item.label}</span>
+                      <span className="font-space-grotesk text-lg font-bold text-white/80 group-hover:text-white transition-colors">{item.val}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Social Protocols */}
-            <div className="bg-[#ffffff01] border border-white/[0.04] p-8">
-              <h4 className="font-mono text-[10px] tracking-[0.2em] uppercase text-white/50 mb-6 flex items-center gap-2">
-                <Server className="w-3.5 h-3.5" /> Redes Sociales
-              </h4>
-              <div className="grid grid-cols-1 gap-3">
+            <div className="p-10 border border-white/10 bg-white/[0.01] backdrop-blur-xl">
+              <div className="flex items-center gap-4 mb-10">
+                <Activity size={18} className="text-blue-500/40" />
+                <span className="font-ibm-plex text-[10px] tracking-[0.3em] uppercase text-white/30 font-bold">Nodos_Sociales</span>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
                 {[
-                  { Icon: Linkedin, label: 'LINKEDIN', link: "https://www.linkedin.com/company/ieee-cs-uni-sb/" },
-                  { Icon: Instagram, label: 'INSTAGRAM', link: "https://www.instagram.com/ieee.cs.uni/" },
-                  { Icon: Github, label: 'GITHUB', link: "https://github.com/ieeecsuni-droid" }
+                  { Icon: Linkedin, label: 'Linkedin_Network', link: "https://www.linkedin.com/company/ieee-cs-uni-sb/" },
+                  { Icon: Instagram, label: 'Instagram_Feed', link: "https://www.instagram.com/ieee.cs.uni/" },
+                  { Icon: Github, label: 'Github_Repository', link: "https://github.com/ieeecsuni-droid" }
                 ].map((info, i) => (
-                  <a 
-                    key={i} 
-                    href={info.link} 
-                    target='_blank' 
-                    rel='noopener noreferrer' 
-                    className="flex items-center gap-4 p-3 bg-[#030408] border border-white/[0.04] hover:border-white/[0.15] hover:bg-white/[0.02] transition-colors group"
-                  >
-                    <info.Icon className="w-4 h-4 text-white/30 group-hover:text-white" />
-                    <span className="font-mono text-[10px] tracking-widest text-white/50 group-hover:text-white uppercase">{info.label}</span>
+                  <a key={i} href={info.link} target='_blank' rel='noopener noreferrer' className="flex items-center justify-between p-4 border border-white/5 bg-black hover:border-blue-500/20 hover:bg-blue-600/5 transition-all group">
+                    <div className="flex items-center gap-4">
+                      <info.Icon size={14} className="text-white/20 group-hover:text-blue-400" />
+                      <span className="font-ibm-plex text-[10px] tracking-[0.2em] text-white/40 group-hover:text-white uppercase font-bold">{info.label}</span>
+                    </div>
+                    <ChevronRight size={14} className="text-white/10 group-hover:text-white transition-transform" />
                   </a>
                 ))}
               </div>
             </div>
 
-            {/* FAQ Console */}
-            <div className="bg-[#ffffff01] border border-white/[0.04] p-8 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/30" />
-              <h5 className="font-mono text-[10px] tracking-[0.2em] text-blue-500/70 uppercase mb-4">
-                PREGUNTAS FRECUENTES
-              </h5>
-              <details className="group cursor-pointer">
-                <summary className="text-[12px] text-white/70 flex items-center justify-between list-none font-medium mb-2">
+            <div className="p-10 border border-white/10 bg-blue-600/[0.02] relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500/20" />
+              <div className="flex items-center gap-4 mb-6">
+                <HelpCircle size={18} className="text-blue-500/40" />
+                <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-blue-500/60 uppercase font-bold">Query_Assistance</span>
+              </div>
+              <details className="group/faq cursor-pointer">
+                <summary className="font-space-grotesk text-[13px] font-bold text-white/70 flex items-center justify-between list-none uppercase tracking-wider">
                   ¿Acceso exclusivo FIEE? 
-                  <ChevronRight className="w-3 h-3 text-white/30 group-open:rotate-90 transition-transform" />
+                  <ChevronRight size={14} className="text-white/20 group-open/faq:rotate-90 transition-transform" />
                 </summary>
-                <p className="text-[11px] text-white/40 leading-relaxed mt-3 p-3 bg-[#030408] border border-white/[0.04]">
-                  No, el acceso está permitido a estudiantes de todas las facultades de la UNI apasionados por la tecnología.
-                </p>
+                <div className="mt-6 p-4 border border-white/5 bg-black font-inter text-[13px] text-white/40 leading-relaxed">
+                  No, el acceso está permitido a estudiantes de todas las facultades de la UNI apasionados por la tecnología y la investigación técnica.
+                </div>
               </details>
             </div>
-
           </aside>
-
         </div>
       </section>
 

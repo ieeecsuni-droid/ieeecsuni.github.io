@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mail, Check, Instagram, Linkedin, Github, Terminal, Activity } from 'lucide-react'
+import { Mail, Check, Instagram, Linkedin, Github, Terminal, Activity, ShieldCheck, User } from 'lucide-react'
 
 export function MemberCard({ member }) {
   const { initials, name, role, bio, email, photo, social } = member
@@ -13,100 +13,77 @@ export function MemberCard({ member }) {
   }
 
   return (
-    <article className="group relative flex flex-col h-full bg-[#ffffff01] border border-white/[0.04] rounded-sm overflow-hidden transition-all duration-500 hover:border-white/[0.15] hover:bg-[#ffffff03]">
-      
-      {/* ── LEFT ACCENT BORDER ── */}
-      <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-transparent via-amber-500/0 to-transparent group-hover:via-amber-500/50 transition-all duration-700 z-20 pointer-events-none" />
+    <article className="group relative flex flex-col h-full bg-white/[0.01] border border-white/5 transition-all duration-700 hover:border-blue-500/20 hover:bg-blue-600/[0.02]">
+      <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-white/0 group-hover:border-blue-500/40 transition-all" />
+      <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-white/0 group-hover:border-blue-500/40 transition-all" />
 
-      <div className="p-6 md:p-8 flex flex-col flex-1 relative">
-        
-        {/* ── SYSTEM METADATA HEADER ── */}
-        <div className="flex items-start justify-between mb-8 pb-4 border-b border-white/[0.04]">
+      <div className="p-8 md:p-10 flex flex-col flex-1 relative">
+        <div className="flex items-start justify-between mb-10 pb-4 border-b border-white/5">
           <div className="flex flex-col gap-1">
-            <span className="font-mono text-[9px] tracking-[0.2em] text-white/30 uppercase">
-              MEMBER PROFILE
-            </span>
+            <span className="font-ibm-plex text-[10px] tracking-[0.2em] text-white/20 uppercase font-bold">PERSONNEL_LOG</span>
             <div className="flex items-center gap-2">
-               <span className="w-1.5 h-1.5 bg-emerald-500/80" />
-               <span className="font-mono text-[8px] tracking-widest text-emerald-500/50 uppercase">UNI_MEMBER</span>
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-500/60" />
+               <span className="font-ibm-plex text-[8px] tracking-[0.2em] text-blue-500/50 uppercase font-bold">STATUS_ACTIVE</span>
             </div>
           </div>
-          <Activity className="w-4 h-4 text-white/20" />
+          <ShieldCheck size={16} className="text-white/10 group-hover:text-blue-500/40 transition-colors" />
         </div>
 
-        {/* ── IDENTITY LAYER ── */}
-        <div className="flex items-center gap-5 mb-6">
-          <div className="relative w-16 h-16 shrink-0 bg-[#030408] border border-white/[0.06] flex items-center justify-center overflow-hidden">
+        <div className="flex items-center gap-6 mb-8">
+          <div className="relative w-20 h-20 shrink-0 bg-black border border-white/10 flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 bg-blue-600/5 mix-blend-overlay z-10" />
             {photo ? (
               <img 
                 src={photo} 
                 alt={name} 
-                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+                className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
               />
             ) : (
-              <span className="font-mono text-xl text-white/30">{initials}</span>
+              <User size={32} className="text-white/10 group-hover:text-white/30 transition-colors" />
             )}
-            <div className="absolute inset-0 bg-[#050816]/20 mix-blend-multiply pointer-events-none" />
           </div>
 
           <div className="flex flex-col">
-            <h3 
-              className="text-lg font-light text-white/90 group-hover:text-white transition-colors tracking-tight leading-snug mb-1"
-              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-            >
+            <h3 className="text-2xl font-space-grotesk font-bold text-white mb-2 leading-none tracking-tight group-hover:text-blue-500 transition-colors">
               {name}
             </h3>
-            <span className="font-mono text-[10px] tracking-widest text-amber-500/80 uppercase">
+            <span className="font-ibm-plex text-[10px] tracking-[0.2em] text-white/30 uppercase font-bold">
               {role}
             </span>
           </div>
         </div>
 
-        {/* ── BIO / DATA PAYLOAD ── */}
-        <div className="flex-1 mb-8">
-          <p 
-            className="text-[13px] text-white/40 leading-relaxed"
-            style={{ fontFamily: '"Inter", sans-serif' }}
-          >
+        <div className="flex-1 mb-10">
+          <p className="text-[14px] text-white/40 leading-relaxed font-inter group-hover:text-white/60 transition-colors">
             {bio}
           </p>
         </div>
 
-        {/* ── COMMUNICATION PROTOCOL ── */}
-        <div className="mt-auto flex flex-col gap-3">
-          <div className="flex gap-2">
-            {social?.github && (
-              <a href={social.github} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
-                <Github className="w-3.5 h-3.5" />
+        <div className="mt-auto flex flex-col gap-4">
+          <div className="flex gap-3">
+            {[
+              { icon: Github, link: social?.github },
+              { icon: Linkedin, link: social?.linkedin },
+              { icon: Instagram, link: social?.instagram }
+            ].map((s, i) => s.link && (
+              <a key={i} href={s.link} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center border border-white/5 bg-white/[0.01] hover:border-blue-500/30 hover:bg-blue-600/10 text-white/20 hover:text-blue-400 transition-all duration-500">
+                <s.icon size={16} />
               </a>
-            )}
-            {social?.linkedin && (
-              <a href={social.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
-                <Linkedin className="w-3.5 h-3.5" />
-              </a>
-            )}
-            {social?.instagram && (
-              <a href={social.instagram} target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center border border-white/[0.04] bg-white/[0.01] hover:bg-white hover:text-[#050816] text-white/40 transition-colors">
-                <Instagram className="w-3.5 h-3.5" />
-              </a>
-            )}
+            ))}
           </div>
 
           <button 
             onClick={handleCopyEmail}
-            className={`flex items-center justify-between px-4 py-2.5 border transition-all duration-300 ${
+            className={`flex items-center justify-between px-5 py-3 border transition-all duration-500 font-space-grotesk font-bold text-[10px] tracking-[0.2em] ${
               copied 
-              ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400' 
-              : 'border-white/[0.06] bg-[#030408] text-white/40 hover:text-white hover:border-white/[0.2]'
+              ? 'border-emerald-500/40 bg-emerald-600/10 text-emerald-400' 
+              : 'border-white/10 bg-black text-white/30 hover:text-white hover:border-blue-500/40'
             }`}
           >
-            <span className="font-mono text-[9px] tracking-widest uppercase">
-              {copied ? 'CORREO_COPIADO' : 'COPIAR_CORREO'}
-            </span>
-            {copied ? <Check className="w-3.5 h-3.5" /> : <Mail className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100" />}
+            <span>{copied ? 'EMAIL_COPIADO' : 'CONTACT_CHANNEL'}</span>
+            {copied ? <Check size={14} /> : <Mail size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />}
           </button>
         </div>
-
       </div>
     </article>
   )

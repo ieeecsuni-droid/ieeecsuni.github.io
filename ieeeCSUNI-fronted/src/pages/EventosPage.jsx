@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { events } from '../data'
 import { EventCard } from '../components/ui/EventCard'
-import { Terminal, ArrowUpRight } from 'lucide-react'
+import { EngineeringButton } from '../components/ui/EngineeringButton'
+import { AtmosphereTag } from '../components/ui/AtmosphereTag'
+import { Terminal, Crosshair, Activity, Layers } from 'lucide-react'
 import tuVideo from '../../public/videoplayback.mp4'
 
 const FILTERS = ['Todos', 'Taller', 'Competencia', 'Charla', 'Hackathon', 'Conferencia']
@@ -19,10 +22,10 @@ function FilterChip({ label, isActive, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 text-[10px] font-mono tracking-[0.15em] uppercase transition-all duration-300 border
+      className={`px-6 py-2.5 text-[10px] font-space-grotesk font-bold tracking-[0.2em] uppercase transition-all duration-500 border
         ${isActive
-          ? 'bg-white text-[#050816] border-white'
-          : 'bg-transparent text-white/40 border-white/[0.08] hover:text-white/80 hover:border-white/[0.2]'
+          ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.3)]'
+          : 'bg-white/[0.02] text-white/30 border-white/5 hover:text-white/80 hover:border-white/20'
         }`}
     >
       {label}
@@ -32,18 +35,18 @@ function FilterChip({ label, isActive, onClick }) {
 
 function EmptyState({ filter }) {
   return (
-    <div className="py-24 w-full flex flex-col items-center justify-center border border-dashed border-white/[0.08] bg-[#ffffff01] text-center">
-      <div className="w-12 h-12 flex items-center justify-center mb-4">
+    <div className="py-32 w-full flex flex-col items-center justify-center border border-dashed border-white/10 bg-white/[0.01] text-center">
+      <div className="w-16 h-16 border border-white/10 flex items-center justify-center mb-8 bg-white/[0.02]">
         <Terminal className="w-6 h-6 text-white/20" />
       </div>
-      <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-2">
-        QUERY: {filter}
+      <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-blue-500/60 uppercase mb-4 font-bold">
+        QUERY_STATUS: NO_RESULTS
       </span>
-      <h3 className="font-light text-lg text-white/60 mb-2 tracking-tight" style={{ fontFamily: '"Space Grotesk", sans-serif' }}>
-        No se encontraron eventos.
+      <h3 className="font-space-grotesk font-bold text-3xl text-white mb-4 tracking-tight">
+        Sin eventos registrados.
       </h3>
-      <p className="text-white/40 text-[13px] max-w-sm" style={{ fontFamily: '"Inter", sans-serif' }}>
-        La categoría solicitada no tiene eventos programados actualmente. Explora otras opciones o revisa nuevamente más adelante.
+      <p className="text-white/40 text-[15px] max-w-sm font-inter">
+        La categoría <span className="text-white/60">[{filter}]</span> no tiene eventos programados actualmente. Explora otras áreas del sistema.
       </p>
     </div>
   )
@@ -57,37 +60,15 @@ export default function EventosPage() {
     ? events
     : events.filter(e => e.type === activeFilter)
 
-  // Separar el primer evento destacado del resto
   const featuredEvents = filtered.filter(e => e.featured)
   const mainFeatured = featuredEvents.length > 0 ? featuredEvents[0] : null
   const gridEvents = mainFeatured ? filtered.filter(e => e.id !== mainFeatured.id) : filtered
 
   return (
-    <main className="bg-[#050816] text-white min-h-screen selection:bg-amber-500/30 selection:text-white overflow-hidden">
+    <main className="bg-black text-white min-h-screen selection:bg-blue-600/30 overflow-hidden font-inter">
       
-      {/* Background Architectural Blueprint System */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px',
-            maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)'
-          }}
-        />
-        {/* Timeline Vector (Vertical line) */}
-        <div className="absolute left-6 lg:left-20 top-0 bottom-0 w-[1px] bg-white/[0.04] hidden md:block" />
-        <div className="absolute right-6 lg:right-20 top-0 bottom-0 w-[1px] bg-white/[0.04] hidden md:block" />
-      </div>
-
-      {/* ══ HERO & OPS CENTER ════════════════════════════════════ */}
-      <section className="relative z-10 min-h-[85vh] flex items-center pt-32 pb-24 px-6 md:px-12 lg:px-20 overflow-hidden border-b border-white/[0.04]">
-        
-        {/* Background Video */}
+      {/* ══ HERO ══════════════════════════════════════════════ */}
+      <section className="relative min-h-[85vh] flex items-center pt-32 pb-24 px-6 md:px-24 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <video
             src={tuVideo}
@@ -95,176 +76,117 @@ export default function EventosPage() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover opacity-25 filter grayscale contrast-[1.2]"
+            className="w-full h-full object-cover opacity-20 grayscale"
           />
-          {/* Architectural Overlays */}
-          <div className="absolute inset-0 bg-[#050816]/60 mix-blend-multiply pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/80 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#050816] via-[#050816]/50 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05),transparent_70%)]" />
           
-          {/* Technical framing lines */}
-          <div className="absolute top-8 left-8 w-12 h-12 border-t border-l border-white/20 pointer-events-none" />
-          <div className="absolute bottom-8 right-8 w-12 h-12 border-b border-r border-white/20 pointer-events-none" />
-          <div className="absolute bottom-8 left-8 font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase pointer-events-none">
-            REC • LIMA_PE
+          <div className="absolute inset-20 border border-white/5 pointer-events-none hidden lg:block" />
+          <div className="absolute bottom-12 left-12 font-ibm-plex text-[10px] tracking-[0.4em] text-white/20 uppercase pointer-events-none">
+            REC • LIMA_SYS_N01
           </div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full">
-          
-          <div className="reveal max-w-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-1.5 h-1.5 bg-amber-500 animate-pulse" />
-              <span className="font-mono text-[10px] tracking-[0.2em] text-white/40 uppercase">
-                Eventos y Charlas
-              </span>
-            </div>
-
-            <h1 
-              className="text-[clamp(48px,7vw,88px)] font-light tracking-tight leading-[1.05] text-white mb-6"
-              style={{ fontFamily: '"Space Grotesk", "Clash Display", sans-serif' }}
-            >
-              EVENTOS Y<br />
-              <span className="text-white/30">TALLERES.</span>
+        <div className="relative z-10 max-w-[1700px] mx-auto w-full grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-20 items-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="max-w-3xl">
+            <AtmosphereTag className="mb-12">Eventos y Capacitación Técnica</AtmosphereTag>
+            <h1 className="font-space-grotesk font-bold text-[clamp(2.5rem,8vw,10rem)] leading-[0.85] tracking-tight uppercase text-white mb-12">
+              Eventos y<br /><span className="text-blue-600">Talleres.</span>
             </h1>
-
-            <p 
-              className="max-w-md text-[15px] md:text-[16px] text-white/50 leading-relaxed mb-10"
-              style={{ fontFamily: '"Inter", "Satoshi", sans-serif' }}
-            >
-              Registro cronológico de eventos académicos, talleres de ingeniería y conferencias de tecnología. Fomentamos el aprendizaje continuo a través de experiencias de alto impacto.
+            <p className="text-xl md:text-2xl text-white/40 leading-relaxed font-inter max-w-2xl">
+              Registro cronológico de eventos académicos, workshops de ingeniería y conferencias de tecnología. Fomentamos el aprendizaje continuo a través de experiencias de alto impacto.
             </p>
+          </motion.div>
 
-            <div className="inline-flex items-center gap-3 px-4 py-2 border border-white/[0.08] bg-[#ffffff05] backdrop-blur-sm">
-              <span className="w-1 h-4 bg-emerald-500" />
-              <span className="font-mono text-[10px] tracking-widest text-white/70 uppercase">
-                Actividades en curso
-              </span>
+          <div className="hidden lg:block">
+            <div className="p-10 border border-white/10 bg-white/[0.01] backdrop-blur-3xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-blue-500/30" />
+              <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-blue-500/30" />
+              <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
+                <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold">System_Activity</span>
+                <Activity size={16} className="text-blue-500/40" />
+              </div>
+              <div className="space-y-6">
+                {impactStats.map((stat, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <span className="font-ibm-plex text-[9px] text-white/20 uppercase tracking-widest">{stat.label}</span>
+                    <span className="font-space-grotesk text-2xl font-bold text-white/80">{stat.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* ══ TELEMETRY STRIP ══════════════════════════════════════ */}
-      <div className="relative z-10 border-y border-white/[0.04] bg-[#ffffff01]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.04] md:divide-y-0 divide-y">
-            {impactStats.map((stat, i) => (
-              <div key={stat.label} className={`py-10 md:py-12 ${i % 2 !== 0 ? 'pl-8 md:pl-12' : 'pr-8 md:pr-12'}`}>
-                <div 
-                  className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white/90 mb-2"
-                  style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-                >
-                  {stat.value}
-                </div>
-                <div className="font-mono text-[9px] tracking-[0.2em] text-white/30 uppercase">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ══ EVENT TIMELINE ═══════════════════════════════════════ */}
-      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
-
-          {/* Timeline Header & Filters */}
-          <div className="reveal flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 border-b border-white/[0.04] pb-12">
+      {/* ══ TIMELINE & FILTERS ═══════════════════════════════════ */}
+      <section className="py-48 px-6 md:px-24">
+        <div className="max-w-[1700px] mx-auto">
+          
+          <div className="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-16 mb-24 border-b border-white/5 pb-16">
             <div>
-              <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4 block flex items-center gap-4">
-                <div className="w-6 h-px bg-white/20" />
-                Calendario de Actividades
-              </span>
-              <h2 
-                className="text-4xl md:text-5xl font-light tracking-tight text-white/90"
-                style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-              >
-                Nuestros<br />
-                <span className="text-white/30">Eventos.</span>
+              <AtmosphereTag className="mb-10">Calendario de Actividades</AtmosphereTag>
+              <h2 className="font-space-grotesk font-bold text-5xl md:text-7xl text-white mb-4 tracking-tighter">
+                Nuestros<br /><span className="text-blue-600">Eventos.</span>
               </h2>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {FILTERS.map(f => (
-                <FilterChip
-                  key={f}
-                  label={f}
-                  isActive={activeFilter === f}
-                  onClick={() => setActiveFilter(f)}
-                />
+                <FilterChip key={f} label={f} isActive={activeFilter === f} onClick={() => setActiveFilter(f)} />
               ))}
             </div>
           </div>
 
-          {/* Content Grid */}
           {filtered.length > 0 ? (
-            <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {/* Featured Event takes full row if it exists */}
+            <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5 border border-white/5">
               {mainFeatured && (
                 <EventCard event={{ ...mainFeatured, featured: true }} />
               )}
-              
-              {/* Standard Events flow normally */}
               {gridEvents.map(ev => (
                 <EventCard key={ev.id} event={{ ...ev, featured: false }} />
               ))}
             </div>
           ) : (
-            <div className="reveal">
-              <EmptyState filter={activeFilter} />
-            </div>
+            <EmptyState filter={activeFilter} />
           )}
 
         </div>
       </section>
 
       {/* ══ SUBMIT PROPOSAL ══════════════════════════════════════ */}
-      <section className="relative z-10 py-32 px-6 md:px-12 lg:px-20 bg-[#ffffff01] border-t border-white/[0.04]">
-        <div className="max-w-7xl mx-auto reveal flex flex-col md:flex-row items-center justify-between gap-16">
+      <section className="py-48 px-6 md:px-24 bg-white/[0.01] border-t border-white/5">
+        <div className="max-w-[1700px] mx-auto reveal grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-24 items-center">
           
-          <div className="max-w-lg">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4 block">
-              Participación
-            </span>
-            <h2 
-              className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-white/90 mb-6"
-              style={{ fontFamily: '"Space Grotesk", sans-serif' }}
-            >
-              Proponer un<br />
-              <span className="text-white/30">Nuevo Evento.</span>
+          <div className="max-w-3xl">
+            <AtmosphereTag className="mb-10">Participación Técnica</AtmosphereTag>
+            <h2 className="font-space-grotesk font-bold text-5xl md:text-7xl text-white mb-10 leading-[0.95]">
+              Proponer un<br /><span className="text-blue-600">Nuevo Evento.</span>
             </h2>
-            <p 
-              className="text-[14px] text-white/50 leading-relaxed mb-8"
-              style={{ fontFamily: '"Inter", sans-serif' }}
-            >
-              Si tienes expertise en arquitectura cloud, seguridad ofensiva, sistemas embebidos o algoritmia avanzada, te brindamos la infraestructura para liderar un workshop.
+            <p className="text-xl text-white/40 leading-relaxed font-inter mb-12">
+              Si tienes expertise en arquitectura cloud, seguridad ofensiva, sistemas embebidos o algoritmia avanzada, te brindamos la infraestructura para liderar un workshop oficial de IEEE Computer Society UNI.
             </p>
-            
-            <Link
-              to="/contacto"
-              onClick={() => window.scrollTo(0, 0)}
-              className="group inline-flex items-center gap-3 px-6 py-3 border border-white/10 text-[11px] font-mono tracking-widest uppercase text-white/70 hover:bg-white hover:text-[#050816] hover:border-white transition-all duration-300"
-            >
-              Contactar Equipo
-              <ArrowUpRight className="w-4 h-4 opacity-50 group-hover:opacity-100 transition-opacity" />
-            </Link>
+            <EngineeringButton to="/contacto">Contactar al Equipo</EngineeringButton>
           </div>
 
-          <div className="w-full max-w-sm flex flex-col gap-1 font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] border-l border-white/[0.04] pl-8">
-            <div className="py-3 border-b border-white/[0.04] flex justify-between">
-              <span>Público</span>
-              <span className="text-white/60">Comunidad UNI</span>
+          <div className="relative p-12 border border-white/10 bg-white/[0.01] backdrop-blur-2xl">
+            <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-blue-500/20" />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-blue-500/20" />
+            <div className="flex items-center gap-4 mb-10">
+              <Layers size={20} className="text-blue-500/40" />
+              <span className="font-ibm-plex text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold">Requisitos_Mínimos</span>
             </div>
-            <div className="py-3 border-b border-white/[0.04] flex justify-between">
-              <span>Logística</span>
-              <span className="text-white/60">Facilitada</span>
-            </div>
-            <div className="py-3 border-b border-white/[0.04] flex justify-between">
-              <span>Alcance</span>
-              <span className="text-white/60">Red Global IEEE</span>
+            <div className="space-y-8">
+              {[
+                { label: 'Público', val: 'Comunidad UNI' },
+                { label: 'Logística', val: 'Facilitada por IEEE CS' },
+                { label: 'Alcance', val: 'Red Global IEEE' },
+              ].map((item, i) => (
+                <div key={i} className="flex justify-between items-end border-b border-white/5 pb-4">
+                  <span className="font-ibm-plex text-[9px] text-white/20 uppercase tracking-widest">{item.label}</span>
+                  <span className="font-mono text-[12px] text-white/70">{item.val}</span>
+                </div>
+              ))}
             </div>
           </div>
 
